@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id   String   @id @default(uuid())
+  avatar    String
+  email     String
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Post {
+  post_id         String   @id @default(uuid())
+  post_type       PostType
+  post_name       String
+  preview_image   String
+  preview_content String
+  content         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum PostType {
+  INTRO
+  TIPS
+  GRAMMAR
+}
+
+model VocabularyTopic {
+  topic_id   String       @id @default(uuid())
+  topic_name String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Vocabulary Vocabulary[]
+}
+
+model Vocabulary {
+  vocab_id String          @id @default(uuid())
+  image    String
+  word     String
+  spelling String
+  mean     String
+  example  String
+  audio    String
+  topic    VocabularyTopic @relation(fields: [topic_id], references: [topic_id])
+  topic_id String
+}
+
+model Test {
+  test_id   String     @id @default(uuid())
+  test_type TestType
+  test_name String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Question  Question[]
+}
+
+enum TestType {
+  READING
+  LISTENING
+}
+
+model Question {
+  question_id String   @id @default(uuid())
+  image       String
+  audio       String
+  question    String
+  option_1    String
+  option_2    String
+  option_3    String
+  option_4    String
+  answer      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  test        Test     @relation(fields: [test_id], references: [test_id])
+  test_id     String
+}
+
+model Exam {
+  exam_id   String   @id @default(uuid())
+  exam_type TestType
+  exam_name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ExamQuestion {
+}

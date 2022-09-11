@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/material": "^5.10.2",
+    "@prisma/client": "^4.2.1",
+    "formik": "^2.2.9",
+    "material-ui-popup-state": "^4.0.2",
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-quill": "^2.0.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "18.7.9",
@@ -19,6 +28,7 @@
     "@types/react-dom": "18.0.6",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
+    "prisma": "^4.2.1",
     "typescript": "4.7.4"
   }
 }
