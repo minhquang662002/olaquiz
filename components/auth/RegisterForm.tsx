@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
-import { Box, Button, Typography, TextField, Link } from "@mui/material";
+import { Box, Button, Typography, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import React from "react";
+import { register } from "../../utils/api";
 
 const validationSchema = yup.object({
   firstName: yup.string().required("This field is required"),
@@ -20,7 +22,9 @@ const validationSchema = yup.object({
     .required("Require confirmation"),
 });
 
-const RegisterForm: NextPage = () => {
+const RegisterForm: NextPage<{
+  setIsHavingAccount: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setIsHavingAccount }) => {
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -32,7 +36,7 @@ const RegisterForm: NextPage = () => {
     validationSchema: validationSchema,
 
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      register(values);
     },
   });
 
@@ -41,14 +45,14 @@ const RegisterForm: NextPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        background: "rgb(227, 230, 233)",
-        width: 500,
+        background: "white",
+        width: { xs: "100%", lg: 500 },
         borderRadius: 2,
         padding: 2,
         gap: 2,
       }}
     >
-      <Typography variant="h6" sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "bold" }}>
         SIGN UP
       </Typography>
       <form
@@ -120,9 +124,12 @@ const RegisterForm: NextPage = () => {
         </Button>
       </form>
 
-      <Link href="/register" sx={{ textAlign: "center" }}>
-        Dont have an account? Sign Up
-      </Link>
+      <Typography
+        sx={{ textAlign: "center" }}
+        onClick={() => setIsHavingAccount(true)}
+      >
+        Already have account? <span className="login__direct">Sign in</span>
+      </Typography>
     </Box>
   );
 };
