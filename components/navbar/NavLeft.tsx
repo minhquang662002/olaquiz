@@ -69,10 +69,10 @@ const NavLeft: FC = () => {
                 fontSize: 12,
               }}
             >
-              Sign in
+              Đăng nhập
             </Button>
             <Button className="register_btn" variant="contained" href="/login">
-              SIGN UP
+              Đăng kí
             </Button>
           </Box>
         ))}

@@ -1,0 +1,75 @@
+import { FC } from "react";
+import { prisma } from "../../utils/db";
+import Head from "next/head";
+import { GetServerSideProps } from "next";
+import { Container, Box, Divider, Typography } from "@mui/material";
+import Image from "next/image";
+const TopicPage: FC<any> = ({ vocabularies, topic }) => {
+  console.log(vocabularies);
+  return (
+    <>
+      <Head>
+        <title>{topic}</title>
+      </Head>
+      <Container maxWidth="lg">
+        {vocabularies.map((item: any) => {
+          return (
+            <>
+              <Box
+                key={item.id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: 2,
+                }}
+              >
+                <div
+                  style={{ width: "20%", height: 150, position: "relative" }}
+                >
+                  <Image
+                    src={item.image}
+                    alt="vocab_image"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <div>
+                  <Typography variant="body1">
+                    <span style={{ color: "red" }}>{item.word}</span>{" "}
+                    <span style={{ color: "blue" }}>{item.spelling}</span>
+                  </Typography>
+                  <Typography>{item.definition}</Typography>
+                  <Typography>{item.example}</Typography>
+                  <audio src={item.audio} controls></audio>
+                </div>
+              </Box>
+              <Divider />
+            </>
+          );
+        })}
+      </Container>
+    </>
+  );
+};
+
+export default TopicPage;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const id = ctx.query?.id;
+  const topic = ctx.query?.topic;
+  const vocabularies = await prisma.vocabulary.findMany({
+    where: {
+      topic: {
+        id: id as string,
+      },
+    },
+  });
+
+  return {
+    props: {
+      vocabularies,
+      topic,
+    },
+  };
+};

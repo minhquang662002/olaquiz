@@ -15,28 +15,30 @@ model User {
   firstName String
   lastName  String
   avatar    String   @default("https://gamek.mediacdn.vn/133514250583805952/2021/12/1/photo-1-1638349281733769557330.png")
-  email     String
+  email     String   @unique
   password  String
-  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int      @default(3)
+  results   Result[]
 }
 
-enum Role {
-  USER
-  ADMIN
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  User User[]
 }
 
 model Post {
-  id         String   @id @default(uuid())
-  title      String
-  category   Category @relation(fields: [categoryId], references: [id])
-  image      String
-  summary    String
-  content    String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  categoryId String
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  image     String
+  summary   String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Vocabulary {
@@ -47,74 +49,57 @@ model Vocabulary {
   definition String
   example    String
   audio      String
+  topic      Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId    String
 }
 
 model Topic {
-  id         String   @id @default(uuid())
-  title      String
-  category   Category @relation(fields: [categoryId], references: [id])
-  image      String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  categoryId String
-
-  @@unique([title])
+  id           String       @id @default(uuid())
+  title        String       @unique
+  image        String
+  vocabularies Vocabulary[]
 }
 
-model Category {
-  id    String       @id @default(uuid())
-  name  String
-  url   String
-  type  CategoryType
-  Post  Post[]
-  Topic Topic[]
-
-  @@unique([url])
-  @@unique([name])
+model Test {
+  id        String     @id @default(uuid())
+  name      String
+  type      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  results   Result[]
+  questions Question[]
 }
 
-enum CategoryType {
-  VOCABULARY
-  POST
+model Exercise {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  type      String
+  questions Question[]
 }
 
-// model Test {
-//   test_id   String     @id @default(uuid())
-//   test_type TestType
-//   test_name String
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
-//   Question  Question[]
-// }
+model Question {
+  id         String    @id @default(uuid())
+  image      String?
+  audio      String?
+  paragraph  String?
+  question   String
+  option_1   String
+  option_2   String
+  option_3   String
+  option_4   String
+  answer     String
+  Test       Test?     @relation(fields: [testId], references: [id])
+  testId     String?
+  Exercise   Exercise? @relation(fields: [exerciseId], references: [id])
+  exerciseId String?
+}
 
-// enum TestType {
-//   READING
-//   LISTENING
-// }
-
-// model Question {
-//   question_id String   @id @default(uuid())
-//   image       String
-//   audio       String
-//   question    String
-//   option_1    String
-//   option_2    String
-//   option_3    String
-//   option_4    String
-//   answer      String
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-//   test        Test     @relation(fields: [test_id], references: [test_id])
-//   test_id     String
-// }
-
-// model Exam {
-//   exam_id   String   @id @default(uuid())
-//   exam_type TestType
-//   exam_name String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model ExamQuestion {
-// }
+model Result {
+  id            String  @id @default(uuid())
+  listen_score  Int
+  reading_score Int
+  User          User?   @relation(fields: [userId], references: [id])
+  userId        String?
+  Test          Test?   @relation(fields: [testId], references: [id])
+  testId        String?
+}

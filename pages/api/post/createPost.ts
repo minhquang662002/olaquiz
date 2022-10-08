@@ -6,7 +6,8 @@ export default async function handler(
   res: NextApiResponse<string>
 ) {
   try {
-    
+
+
   if(!req.body){
     return res.status(400).json("No content!")
   }
@@ -16,12 +17,11 @@ export default async function handler(
   }
 
   await prisma.post.create({data: {
-    title, image, summary, content, category: {connect: {id: category}}
+    title, image, summary, content, category
   }})
   return res.status(200).json('Created post successfully!')
 
   } catch (error) {
-    console.log(error)
     return res.status(500).json("Internal server error!")
   }
 }

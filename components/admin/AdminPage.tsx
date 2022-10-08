@@ -2,22 +2,31 @@ import React, { FC } from "react";
 import { Box } from "@mui/material";
 import Navbar from "../navbar/Navbar";
 import AdminDrawer from "./AdminDrawer";
-import PostCreate from "./PostCreate";
+import DataTable from "./DataTable";
+import { IPost, ITopic, IUser } from "../../utils/types";
+import PostManagement from "./post/PostManagement";
+import TopicManagement from "./vocabulary/TopicManagement";
 
 interface Props {
   page: string;
-  props?: any;
+  users?: IUser[];
+  posts?: IPost[];
+  topics?: ITopic[];
 }
 
-const AdminPage: FC<Props> = ({ page, props }) => {
+const AdminPage: FC<Props> = ({ page, posts, topics }) => {
   let content;
   if (page == "user") {
-    content = <p>user</p>;
+    content = (
+      <DataTable
+        heads={["ID", "Tên", "Họ", "Email", "Vai trò", ""]}
+        type="user"
+      />
+    );
   } else if (page == "post") {
-    content = <PostCreate categories={props} />;
+    content = <PostManagement posts={posts as IPost[]} />;
   } else if (page == "vocabulary") {
-  } else if (page == "category") {
-    content = <p>haha</p>;
+    content = <TopicManagement topics={topics as ITopic[]} />;
   }
 
   return (
@@ -26,7 +35,7 @@ const AdminPage: FC<Props> = ({ page, props }) => {
       <div style={{ width: "80%" }}>
         <Navbar />
 
-        {content}
+        <div style={{ padding: 20 }}>{content}</div>
       </div>
     </Box>
   );

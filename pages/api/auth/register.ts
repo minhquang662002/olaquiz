@@ -1,8 +1,7 @@
 import { prisma } from '../../../utils/db';
 import bcrypt from 'bcrypt'
-import { IUser } from "../../../utils/types";
-
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { User } from '@prisma/client';
 
 // const SECRET = process.env.SECRET
 
@@ -10,7 +9,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IUser | string>
+  res: NextApiResponse<User | string>
 ) {
   try {
     

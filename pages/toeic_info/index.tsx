@@ -5,16 +5,16 @@ import {
   Card,
   CardMedia,
   CardContent,
+  CardActions,
   Typography,
-  Link,
 } from "@mui/material";
-import { GetStaticProps } from "next";
-import { FC } from "react";
-import { prisma } from "../utils/db";
+import { GetStaticProps, NextPage } from "next";
+import { prisma } from "../../utils/db";
 import Head from "next/head";
-import { IPost } from "../utils/types";
+import { IPost } from "../../utils/types";
+import Link from "next/link";
 
-const toeicinfo: FC<{ posts: IPost[] }> = ({ posts }) => {
+const toeicinfo: NextPage<{ posts: IPost[] }> = ({ posts }) => {
   return (
     <>
       <Head>
@@ -31,18 +31,28 @@ const toeicinfo: FC<{ posts: IPost[] }> = ({ posts }) => {
           {posts.map((item) => (
             <Grid item key={item.id}>
               <Card
-                sx={{ height: 500, display: "flex", flexDirection: "column" }}
+                sx={{
+                  width: 300,
+                  height: 500,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <CardMedia component="img" height="200" src={item.image} />
+                <CardMedia component="img" sx={{height: 200}} src={item.image as string} />
+
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h6" fontWeight="bold">
                     {item.title}
                   </Typography>
                   <Typography sx={{ fontSize: 12 }}>{item.summary}</Typography>
-                  <Link sx={{ marginTop: "auto" }} href="/unknown">
-                    Read more :v
-                  </Link>
                 </CardContent>
+                <CardActions>
+                  <Link href={`/toeic_info/post?id=${item.id}`}>
+                    <Typography sx={{ marginTop: "auto" }}>
+                      Read more
+                    </Typography>
+                  </Link>
+                </CardActions>
               </Card>
             </Grid>
           ))}
@@ -57,9 +67,7 @@ export default toeicinfo;
 export const getStaticProps: GetStaticProps = async () => {
   const posts = await prisma.post.findMany({
     where: {
-      category: {
-        url: "/toeic_info",
-      },
+      category: "/toeic_info",
     },
   });
 

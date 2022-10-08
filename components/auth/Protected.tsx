@@ -14,7 +14,7 @@ const Protected: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (session.status != "loading") {
       if (!router.pathname.startsWith("/admin")) {
-        if (session.data?.user.role === "ADMIN") {
+        if (session.data?.user.roleId == 1 || session.data?.user.roleId == 2) {
           router.replace("/admin/user");
         } else {
           setIsAllowed(true);
@@ -23,7 +23,7 @@ const Protected: React.FC<Props> = ({ children }) => {
 
       if (router.pathname.startsWith("/admin")) {
         if (
-          session.data?.user.role !== "ADMIN" ||
+          session.data?.user?.roleId == 3 ||
           session.status == "unauthenticated"
         ) {
           router.replace("/");

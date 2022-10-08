@@ -1,31 +1,35 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { prisma } from "../../utils/db";
-import { ICategory } from "../../utils/types";
+import { ICategory, IPost } from "../../utils/types";
 import AdminPage from "../../components/admin/AdminPage";
 
 interface Props {
-  categories: ICategory[];
+  posts: IPost[];
 }
 
-const Admin: NextPage<Props> = ({ categories }) => {
+const Admin: NextPage<Props> = ({ posts }) => {
   return (
     <>
       <Head>
         <title>olaQuiz - Admin</title>
       </Head>
-      <AdminPage page="post" props={categories} />
+      <AdminPage page="post" posts={posts} />
     </>
   );
 };
 
 export default Admin;
 
-export async function getStaticProps() {
-  const res = await prisma.category.findMany();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const page = Number(context.query?.page) || 1;
+  const posts = await prisma.post.findMany({
+    skip: page * 5,
+    take: 5,
+  });
   return {
     props: {
-      categories: res || null,
+      posts,
     }, // will be passed to the page component as props
   };
-}
+};

@@ -6,7 +6,6 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import {
   Drawer,
   Box,
-  List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -17,24 +16,19 @@ import { useRouter } from "next/router";
 const AdminDrawer = () => {
   const itemsList = [
     {
-      text: "User",
+      text: "Quản lý người dùng",
       icon: <PeopleIcon />,
       to: "/admin/user",
     },
     {
-      text: "Post",
+      text: "Quản lý bài viết",
       icon: <PostAddIcon />,
       to: "/admin/post",
     },
     {
-      text: "Vocabulary",
+      text: "Quản lý từ vựng",
       icon: <TranslateIcon />,
       to: "/admin/vocabulary",
-    },
-    {
-      text: "Category",
-      icon: <CategoryIcon />,
-      to: "/admin/category",
     },
   ];
   const router = useRouter();
