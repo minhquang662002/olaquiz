@@ -11,7 +11,7 @@ const Admin: NextPage<Props> = ({ users }) => {
   return (
     <>
       <Head>
-        <title>olaQuiz - User management</title>
+        <title>Quản lý người dùng</title>
       </Head>
       <AdminPage page="user" users={users} />
     </>

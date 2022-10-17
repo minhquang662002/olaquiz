@@ -5,7 +5,6 @@ import { GetServerSideProps } from "next";
 import { Container, Box, Divider, Typography } from "@mui/material";
 import Image from "next/image";
 const TopicPage: FC<any> = ({ vocabularies, topic }) => {
-  console.log(vocabularies);
   return (
     <>
       <Head>
@@ -25,13 +24,18 @@ const TopicPage: FC<any> = ({ vocabularies, topic }) => {
                 }}
               >
                 <div
-                  style={{ width: "20%", height: 150, position: "relative" }}
+                  style={{
+                    width: 200,
+                    height: 150,
+                    position: "relative",
+                    flexShrink: 0,
+                  }}
                 >
                   <Image
                     src={item.image}
                     alt="vocab_image"
                     layout="fill"
-                    objectFit="contain"
+                    objectFit="cover"
                   />
                 </div>
                 <div>
@@ -57,12 +61,19 @@ export default TopicPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const id = ctx.query?.id;
-  const topic = ctx.query?.topic;
+  const topic = ctx.query?.topic as string;
+
   const vocabularies = await prisma.vocabulary.findMany({
     where: {
       topic: {
-        id: id as string,
+        title: {
+          contains: topic,
+          mode: "insensitive",
+        },
       },
+    },
+    orderBy: {
+      word: "asc",
     },
   });
 

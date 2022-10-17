@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { prisma } from "../../utils/db";
-import { ICategory, IPost } from "../../utils/types";
+import { IPost } from "../../utils/types";
 import AdminPage from "../../components/admin/AdminPage";
 
 interface Props {
@@ -12,7 +12,7 @@ const Admin: NextPage<Props> = ({ posts }) => {
   return (
     <>
       <Head>
-        <title>olaQuiz - Admin</title>
+        <title>Quản lý bài viết</title>
       </Head>
       <AdminPage page="post" posts={posts} />
     </>

@@ -12,5 +12,5 @@
 // }
 
 // export const config = {
-//     matcher: ['/api/post/createPost']
+//     matcher: ['/api/']
 // };

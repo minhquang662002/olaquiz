@@ -9,23 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  FC,
-  SetStateAction,
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { FC, SetStateAction, useState, useContext, useRef } from "react";
 import { toast } from "react-toastify";
 import {
   imageValidation,
   handleClose,
-  uploadFiles,
   readExcel,
   handleCreateTopic,
 } from "../../../utils/fns";
-import { createTopic } from "../../../utils/api";
 import AlertDialog from "../../AlertDialog";
 import { GlobalContext } from "../../context/GlobalContext";
 interface Props {

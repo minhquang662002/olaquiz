@@ -6,15 +6,15 @@ import DataTable from "./DataTable";
 import { IPost, ITopic, IUser } from "../../utils/types";
 import PostManagement from "./post/PostManagement";
 import TopicManagement from "./vocabulary/TopicManagement";
+import ExamManagement from "./exam/ExamManagement";
 
 interface Props {
   page: string;
   users?: IUser[];
   posts?: IPost[];
-  topics?: ITopic[];
 }
 
-const AdminPage: FC<Props> = ({ page, posts, topics }) => {
+const AdminPage: FC<Props> = ({ page, posts }) => {
   let content;
   if (page == "user") {
     content = (
@@ -26,7 +26,9 @@ const AdminPage: FC<Props> = ({ page, posts, topics }) => {
   } else if (page == "post") {
     content = <PostManagement posts={posts as IPost[]} />;
   } else if (page == "vocabulary") {
-    content = <TopicManagement topics={topics as ITopic[]} />;
+    content = <TopicManagement />;
+  } else if (page == "exam") {
+    content = <ExamManagement />;
   }
 
   return (

@@ -14,15 +14,21 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
         }
         if(req.method == "POST") {
             
-            const {title, image} = req.body;
-            if(!title || !image) return res.status(400).json("Missing info");
+            const {topic, vocabularies} = req.body;
+            const assignedVocabularies = vocabularies.map(({STT, ...keepAtrbs}:any) => ({...keepAtrbs}))
+            if(!topic.title || !topic.image) return res.status(400).json("Missing info");
             const newTopic = await prisma.topic.create({
                 data: {
-                    title,
-                    image
+                    title: topic.title,
+                    image: topic.image,
+                    vocabularies: {
+                        createMany: {
+                            data: assignedVocabularies
+                        }
+                    }
                 }
             })
-            return res.status(200).json(newTopic.id);
+            return res.status(200).json("Success");
         }
 
     } catch (error) {

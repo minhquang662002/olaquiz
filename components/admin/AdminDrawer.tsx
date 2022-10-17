@@ -30,6 +30,16 @@ const AdminDrawer = () => {
       icon: <TranslateIcon />,
       to: "/admin/vocabulary",
     },
+    {
+      text: "Quản lý bài luyện tập",
+      icon: <TranslateIcon />,
+      to: "/admin/practice",
+    },
+    {
+      text: "Quản lý bài thi",
+      icon: <TranslateIcon />,
+      to: "/admin/exam",
+    },
   ];
   const router = useRouter();
 

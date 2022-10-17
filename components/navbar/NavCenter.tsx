@@ -1,5 +1,5 @@
 import React, { useMemo, FC } from "react";
-import { Box, Button, MenuItem } from "@mui/material";
+import { Box, Button } from "@mui/material";
 const NavCenter: FC = () => {
   const PAGES = useMemo(
     () => [
@@ -24,12 +24,12 @@ const NavCenter: FC = () => {
         url: "/vocabulary",
       },
       {
-        name: "Bài tập",
-        url: "/exam",
+        name: "Luyện tập",
+        url: "/practice",
       },
       {
         name: "Thi thử",
-        url: "/exam",
+        url: "/test",
       },
     ],
     []

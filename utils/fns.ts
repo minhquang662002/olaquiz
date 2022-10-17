@@ -154,13 +154,39 @@ export const handleCreateTopic = async (topic: any, vocabularies: any, imageFile
         audio: audioPos != -1 ? audioUrls[audioPos] : "",
       };
     });
-    // createTopic(
-    //   ,
-    //   vocabularies.current
-    // );
-    const newTopic = (await axios.post("/api/topic", { ...topic, image: prImgUrl[0] })).data
 
-    await axios.post(`/api/vocabulary?topicId=${newTopic}`, {vocabularies})
+    const newTopic = (await axios.post("/api/topic", { topic: {...topic, image: prImgUrl[0]}, vocabularies: vocabularies })).data
+    console.log(newTopic)
+
+    return toast.success("Created successfully!")
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const handleCreateExam = async (questions: any, imageFiles:any, audioFiles: any) => {
+  try {
+
+    const imageUrls = await uploadFiles(imageFiles as File[]);
+    const audioUrls = await uploadFiles(audioFiles as File[]);
+    const irls = imageUrls.map((item) =>
+      Number(item.split("/").reverse()[0].split("_")[0])
+    );
+    const arls = audioUrls.map((item) =>
+      Number(item.split("/").reverse()[0].split("_")[0])
+    );
+    questions = questions.map((item: any) => {
+      let imagePos = irls.indexOf(item.STT);
+      let audioPos = arls.indexOf(item.STT);
+      return {
+        ...item,
+        image: imagePos != -1 ? imageUrls[imagePos] : "",
+        audio: audioPos != -1 ? audioUrls[audioPos] : "",
+      };
+    });
+
+
+    await axios.post(`/api/exam`, {questions})
     return toast.success("Created successfully!")
   } catch (error) {
     console.log(error)
