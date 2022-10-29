@@ -5,6 +5,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { Avatar, Box, Button, MenuItem, Menu } from "@mui/material";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 const NavLeft: FC = () => {
   const session = useSession();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -42,8 +43,9 @@ const NavLeft: FC = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <Link href={`/account/${session.data.user.id}`}>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+              </Link>
               <MenuItem
                 onClick={() => {
                   handleClose();

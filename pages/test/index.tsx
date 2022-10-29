@@ -1,9 +1,11 @@
-import { NextPage } from "next";
+import { NextPage, GetStaticProps, GetServerSideProps } from "next";
 import { Container, Typography, Box, Button } from "@mui/material";
 import full from "../../asset/full-test.webp";
 import mini from "../../asset/mini-test.webp";
 import Image from "next/image";
 import Head from "next/head";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 interface Props {
   tests: any;
@@ -156,3 +158,26 @@ const index: NextPage<Props> = () => {
 };
 
 export default index;
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const auth = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  if (!auth) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/?error=auth-to-test",
+      },
+    };
+  }
+  return {
+    props: {
+
+    }
+  }
+
+};

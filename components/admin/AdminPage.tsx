@@ -3,10 +3,10 @@ import { Box } from "@mui/material";
 import Navbar from "../navbar/Navbar";
 import AdminDrawer from "./AdminDrawer";
 import DataTable from "./DataTable";
-import { IPost, ITopic, IUser } from "../../utils/types";
+import { IPost, IUser } from "../../utils/types";
 import PostManagement from "./post/PostManagement";
 import TopicManagement from "./vocabulary/TopicManagement";
-import ExamManagement from "./exam/ExamManagement";
+import TestManagement from "./test/TestManagement";
 
 interface Props {
   page: string;
@@ -28,7 +28,7 @@ const AdminPage: FC<Props> = ({ page, posts }) => {
   } else if (page == "vocabulary") {
     content = <TopicManagement />;
   } else if (page == "exam") {
-    content = <ExamManagement />;
+    content = <TestManagement />;
   }
 
   return (

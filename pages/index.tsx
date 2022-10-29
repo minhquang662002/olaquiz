@@ -1,8 +1,19 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Container, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  console.log(router.query);
+  useEffect(() => {
+    if (router.query.error == "auth-to-test") {
+      toast.error("You must login to do test!");
+    }
+  }, [router.query.error]);
+
   return (
     <>
       <Head>

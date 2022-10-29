@@ -70,7 +70,6 @@ export default VocabularyPage;
 
 export const getStaticProps: GetStaticProps = async () => {
   const topics = await prisma.topic.findMany();
-  console.log(topics);
   return {
     props: {
       topics,

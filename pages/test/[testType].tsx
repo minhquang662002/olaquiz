@@ -13,7 +13,6 @@ import { Test } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Head from "next/head";
-import Link from "next/link";
 
 interface Props {
   tests: (Test & { result: string })[];
@@ -76,12 +75,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     authOptions
   );
 
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/?error=auth-to-test",
+      },
+    };
+  }
+
   const tests =
-    await prisma.$queryRaw`select *, (select "Result"."listen_score" from "Result" 
+    await prisma.$queryRaw`select *, (select "Result"."score" from "Result" 
     inner join "User" on "User".id = "Result"."userId" 
     inner join "Test" on "Test".id = "Result"."testId"
-    where "Result"."userId" = ${session?.user?.id} and "Result"."testId" = p.id) as result from "Test" as p`;
-  console.log(tests);
+    where "Result"."userId" = ${session?.user?.id} and "Result"."testId" = p.id order by "Result"."createdAt" desc limit 1) as result from "Test" as p`;
+
   return {
     props: {
       tests,

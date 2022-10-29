@@ -32,6 +32,25 @@ a {
   min-height:200px;
 }
 
+.prev__question-btn{
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+  border: 2px solid #007AFF !important;
+  color: #007AFF !important;
+  width: 100px;
+  cursor: pointer
+}
+
+.next__question-btn{
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 10%);
+  background: #007AFF !important;
+  color: white!important;
+  width: 100px;
+  
+  
+}
+
 
 
 

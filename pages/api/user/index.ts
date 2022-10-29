@@ -8,8 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const rows = req.query.rows ? Number(req.query.rows) : 5;
         const token = await getToken({req})
         let data;
-        //@ts-ignore
-        console.log(token.user.roleId)
+
         //@ts-ignore
         if(token.user.roleId == 1) {
              data = await prisma.user.findMany({

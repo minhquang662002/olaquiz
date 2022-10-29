@@ -1,47 +1,51 @@
-import { FC, useState, useEffect } from "react";
-
+import { FC, useState, useEffect, useRef, useCallback } from "react";
+import { Typography } from "@mui/material";
 interface Props {
   type: string;
+  start: boolean;
+  setIsSubmitted: any;
 }
 
-const Timer: FC<Props> = ({ type }) => {
-  const [hours, setHours] = useState(type == "mini" ? 0 : 2);
-  const [minutes, setMinutes] = useState(1);
+const Timer: FC<Props> = ({ type, start, setIsSubmitted }) => {
+  const [hours, setHours] = useState(type == "mini" ? 1 : 2);
+  const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  useEffect(() => {
-    const timeChange = () => {
-      if (seconds != 0) {
-        setSeconds((state) => state - 1);
+  const timerRef = useRef<any>();
+  const timeChange = useCallback(() => {
+    if (seconds != 0) {
+      setSeconds((state) => state - 1);
+    } else {
+      if (minutes != 0) {
+        setMinutes((state) => state - 1);
       } else {
-        console.log("second 0");
-        if (minutes != 0) {
-          setMinutes((state) => state - 1);
+        setMinutes(59);
+        if (hours != 0) {
+          setHours((state) => state - 1);
         } else {
-          setMinutes(59);
-          if (hours != 0) {
-            setHours((state) => state - 1);
-          } else {
-            alert("end");
-          }
+          setIsSubmitted(true);
         }
-        setSeconds(59);
       }
-    };
-    var timer: any;
-    if (hours != 0 && minutes != 0 && seconds != 0) {
-      timer = setInterval(() => {
-        timeChange();
-      }, 100);
+      setSeconds(59);
     }
+  }, [hours, minutes, seconds, setIsSubmitted]);
 
-    return () => clearInterval(timer);
-  }, [hours, minutes, seconds]);
+  useEffect(() => {
+    if (start) {
+      timerRef.current = setInterval(() => {
+        timeChange();
+      }, 1000);
+    } else {
+      clearInterval(timerRef.current);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timeChange, start]);
 
   return (
-    <div>
-      {hours}:{minutes}:{seconds}
-    </div>
+    <Typography sx={{ color: "#26C048", fontWeight: "bold" }}>
+      0{hours}:{minutes < 10 ? `0${minutes}` : minutes}:
+      {seconds < 10 ? `0${seconds}` : seconds}
+    </Typography>
   );
 };
 

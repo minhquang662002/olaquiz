@@ -6,6 +6,7 @@ import { createPost } from "./api";
 import * as XLSX from "xlsx";
 
 
+
 export const uploadFiles = async (files: File[]) : Promise<string[]> => {
   let upFiles = [];
   try {
@@ -15,8 +16,6 @@ export const uploadFiles = async (files: File[]) : Promise<string[]> => {
         formData.append("upload_preset", "a2npymha");
         formData.append("cloud_name", "dd0w757jk");
         formData.append("folder", "olaquiz");
-
- 
 
           const res = await axios.post(
             "https://api.cloudinary.com/v1_1/dd0w757jk/upload",
@@ -40,6 +39,18 @@ export const imageValidation = (file: File) => {
   }
 }
 
+
+export const fileValidation = (file: File, extension: string[]) => {
+  if(extension.some(item => file.type != item)){
+    return `File format must be .${extension.join(",")}`;
+  }
+}
+
+export const sizeValidation = (file: File, size: number) => {
+  if(file.size > size * 1024 * 1024 ){
+    return `File's size must under or equal to ${size}MB`;
+  }
+}
 
 // export const postValidation = (preview, category, content) => {
 //   if (
@@ -164,7 +175,7 @@ export const handleCreateTopic = async (topic: any, vocabularies: any, imageFile
   }
 }
 
-export const handleCreateExam = async (questions: any, imageFiles:any, audioFiles: any) => {
+export const handleCreateExam = async (testName: string, questions: any, imageFiles:any, audioFiles: any) => {
   try {
 
     const imageUrls = await uploadFiles(imageFiles as File[]);
@@ -184,11 +195,26 @@ export const handleCreateExam = async (questions: any, imageFiles:any, audioFile
         audio: audioPos != -1 ? audioUrls[audioPos] : "",
       };
     });
+    questions = questions.map(({STT, ...item}:any ) => item)
 
-
-    await axios.post(`/api/exam`, {questions})
+    await axios.post(`/api/test`, {questions, testName})
     return toast.success("Created successfully!")
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const submitTest = async (score: number, userId: string, testId: string, answeredList: Map<number, string>) => {
+  try {
+    const answeredArr = Array.from(answeredList, ([number, answer]) => ({number, answer}))
+    await axios.post("/api/result", {
+      score,
+      userId,
+      testId,
+      answeredArr
+    })
+  } catch (error) {
+    console.log(error)
+    return toast.error("Error")
   }
 }
