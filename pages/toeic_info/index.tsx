@@ -91,10 +91,10 @@ export const getStaticProps: GetStaticProps = async () => {
       category: "/toeic_info",
     },
   });
-
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
     },
+    revalidate: 3600,
   };
 };

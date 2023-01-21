@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.2",
-    "@prisma/client": "^4.4.0",
+    "@prisma/client": "^4.9.0",
     "@syncfusion/ej2-react-richtexteditor": "^20.4.44",
     "@types/bcrypt": "^5.0.0",
     "axios": "^0.27.2",
@@ -38,7 +38,7 @@
     "@types/react-dom": "18.0.6",
     "eslint": "8.22.0",
     "eslint-config-next": "^13.1.1",
-    "prisma": "^4.4.0",
+    "prisma": "^4.9.0",
     "supabase": "^1.34.5",
     "typescript": "4.7.4"
   }
