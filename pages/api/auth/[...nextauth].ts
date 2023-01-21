@@ -20,13 +20,13 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findFirst({
           where: { email },
         });
-        console.log(password);
+
         if (!user) {
           throw Error("This email does not exist!");
         }
 
         const isCorrectPassword = await bcrypt.compare(password, user.password);
-        console.log(user.password);
+
         if (!isCorrectPassword) {
           throw Error("Email or password is incorrect!");
         }
