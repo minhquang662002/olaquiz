@@ -5,14 +5,6 @@ import { COLORS } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { imageValidation, uploadFiles } from "../../utils/fns";
 import { GlobalContext } from "../context/GlobalContext";
-import * as QuillTableUI from "quill-table-ui";
-
-Quill.register(
-  {
-    "modules/tableUI": QuillTableUI,
-  },
-  true
-);
 
 Quill.register("modules/imageResize", ImageResize);
 
