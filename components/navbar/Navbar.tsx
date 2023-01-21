@@ -4,18 +4,9 @@ import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 import NavCenter from "./NavCenter";
 import NavLeft from "./NavLeft";
-// import { useEffect } from "react";
-// import axios from "axios";
 
 const Navbar: NextPage = () => {
   const router = useRouter();
-
-  // useEffect(() => {
-  //   (async function () {
-  //     const res = await axios.get("/api/category/getCategory");
-  //     console.log(res);
-  //   })();
-  // }, []);
 
   return (
     <>

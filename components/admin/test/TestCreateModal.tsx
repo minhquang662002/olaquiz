@@ -2,30 +2,49 @@ import { Modal, Box, Divider, Button, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { FC, SetStateAction, useState, useContext, useRef } from "react";
 import { toast } from "react-toastify";
-import {
-  imageValidation,
-  fileValidation,
-  handleClose,
-  readExcel,
-  handleCreateExam,
-} from "../../../utils/fns";
+import { handleClose, readExcel, handleCreateExam } from "../../../utils/fns";
 import AlertDialog from "../../AlertDialog";
 import { GlobalContext } from "../../context/GlobalContext";
-
+import { handleFiles } from "../../../utils/fns";
+import { useMutation, useQueryClient } from "react-query";
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const TestCreateModal: FC<Props> = ({ open, setOpen }) => {
+  const queryClient = useQueryClient();
   const { setIsLoading } = useContext(GlobalContext);
   const [openDialog, setOpenDialog] = useState(false);
   const [testName, setTestName] = useState("");
   const [testType, setTestType] = useState("");
-  console.log(testType);
   const excelRef = useRef<any>([]);
   const audioFiles = useRef<any>([]);
   const imageFiles = useRef<any>([]);
+
+  const createMutation = useMutation({
+    mutationFn: () =>
+      handleCreateExam(
+        testName,
+        testType,
+        excelRef.current,
+        imageFiles.current,
+        audioFiles.current
+      ),
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminData");
+      setIsLoading(false);
+      toast.success("Thêm thành công");
+      setOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error as string);
+      setIsLoading(false);
+    },
+  });
 
   return (
     <>
@@ -107,7 +126,7 @@ const TestCreateModal: FC<Props> = ({ open, setOpen }) => {
                   ) {
                     return toast.error("File must be excel");
                   }
-                  excelRef.current = readExcel(e.target.files[0]);
+                  excelRef.current = await readExcel(e.target.files[0]);
                 }
               }}
             />
@@ -115,40 +134,20 @@ const TestCreateModal: FC<Props> = ({ open, setOpen }) => {
             <input
               type="file"
               multiple
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                if (files.some((item) => !item.type.startsWith("image")))
-                  return toast.error("Files must be image");
-                imageFiles.current = files;
-              }}
+              onChange={(e) => handleFiles(imageFiles, e.target.files, "image")}
             />
             <label>File nghe: </label>
             <input
               type="file"
               multiple
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                if (files.some((item) => !item.type.startsWith("audio")))
-                  return toast.error("Files must be audio");
-                audioFiles.current = files;
-              }}
+              onChange={(e) => handleFiles(audioFiles, e.target.files, "audio")}
             />
           </Box>
 
           <Button
             variant="contained"
             sx={{ marginTop: 4, width: "100%" }}
-            onClick={async () => {
-              setIsLoading(true);
-              handleCreateExam(
-                testName,
-                excelRef.current,
-                imageFiles.current,
-                audioFiles.current
-              );
-              setIsLoading(false);
-              setOpen(false);
-            }}
+            onClick={() => createMutation.mutate()}
           >
             Tạo
           </Button>

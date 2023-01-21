@@ -1,11 +1,11 @@
 import { prisma } from "../../utils/db";
 import { GetServerSideProps, NextPage } from "next";
-import { IPost } from "../../utils/types";
 import { Container, Box } from "@mui/system";
 import Head from "next/head";
-
+import { Post } from "@prisma/client";
+import IntroTitle from "../../components/IntroTitle";
 interface Props {
-  post: IPost;
+  post: Post;
 }
 
 const PostPage: NextPage<Props> = ({ post }) => {
@@ -14,6 +14,7 @@ const PostPage: NextPage<Props> = ({ post }) => {
       <Head>
         <title>{post.title}</title>
       </Head>
+      <IntroTitle content={`${post.title}`} />
       <Box>
         <Container maxWidth="lg">
           <div

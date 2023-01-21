@@ -1,4 +1,7 @@
 
+import { Dispatch, SetStateAction } from 'react';
+import { Question, Result, User } from '@prisma/client';
+
 export interface LoginProps{
     email: string;
     password: string;
@@ -12,47 +15,39 @@ export interface RegisterProps{
     confirm_password: string;
 }
 
-export interface ITopic {
-  id: string;
-  title: string;
-  image: string
-}
-
-export interface IUser{
-  
-    id: string;
-    role: {
-        name: string;
-    };
-    email: string;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-    createdAt: Date;
-    updatedAt: Date;
+export interface TestDisplayRightProps {
+  questions: Question[];
+  answeredList: Map<number, string>;
+  displayedNumber: number;
+  start: boolean;
+  isSubmitted: boolean;
+  setDisplayedNumber: Dispatch<SetStateAction<number>>;
+  setStart: Dispatch<SetStateAction<boolean>>;
+  setIsSubmitted: Dispatch<SetStateAction<boolean>>;
+  setAnsweredList: Dispatch<SetStateAction<Map<number, string>>>;
 
 }
 
-export interface ICategory{
-  id: string
-  name: string
-  url: string
-  type: string
+export interface DisplayedQuestionProps extends Omit<TestDisplayRightProps, "questions" | "displayedNumber" | "setDisplayedNumber" | "score" | "setScore">{
+  question: Question[]
 }
 
-export interface IPost{
-    id?: string | undefined;
-    title: string;
-    category: string;
-    image: string | File;
-    summary: string;
-    content: string;
-    createdAt?: string | Date | undefined;
-    updatedAt?: string | Date | undefined;
+export interface TestDisplayLeftProps extends Omit<TestDisplayRightProps, "setStart" | "setAnsweredList" > {
+  testName: string
+  ranking: (Result & User)[]
+  setScore: Dispatch<SetStateAction<number>>
+  type?: string
+}
+
+export interface QuestionPalleteProps extends Omit<TestDisplayLeftProps, "testName" | "ranking"> {
+  setStart: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface QuestionPalleteButtonProps extends Omit<QuestionPalleteProps, "result"| "start"| "setIsSubmitted" | "score" | "setScore" | "setStart"> {
+  item: Question
 }
 
 
-import { User } from "@prisma/client";
 import { DefaultUser } from "next-auth";
 
 declare module "next-auth" {    

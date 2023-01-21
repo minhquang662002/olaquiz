@@ -50,9 +50,12 @@ const NavLeft: FC = () => {
                 onClick={() => {
                   handleClose();
                   signOut({
-                    callbackUrl: router.pathname.startsWith("/admin")
-                      ? "/"
-                      : window.location.pathname,
+                    callbackUrl:
+                      router.pathname.startsWith("/admin") ||
+                      router.pathname.startsWith("/test") ||
+                      router.pathname.startsWith("/study")
+                        ? "/"
+                        : window.location.pathname,
                   });
                 }}
               >

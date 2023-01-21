@@ -1,7 +1,6 @@
 import {
   Container,
   Grid,
-  Box,
   Card,
   CardMedia,
   CardContent,
@@ -11,21 +10,17 @@ import {
 import { GetStaticProps, NextPage } from "next";
 import { prisma } from "../../utils/db";
 import Head from "next/head";
-import { IPost } from "../../utils/types";
 import Link from "next/link";
+import IntroTitle from "../../components/IntroTitle";
+import { Post } from "@prisma/client";
 
-const toeicinfo: NextPage<{ posts: IPost[] }> = ({ posts }) => {
+const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
   return (
     <>
       <Head>
         <title>Mẹo thi TOEIC</title>
       </Head>
-      <Box
-        sx={{
-          background: "black",
-          height: 200,
-        }}
-      ></Box>
+      <IntroTitle content="Mẹo thi TOEIC" />
       <Container maxWidth="lg" sx={{ marginTop: 5 }}>
         <Grid container spacing={2}>
           {posts.map((item) => (
@@ -48,8 +43,8 @@ const toeicinfo: NextPage<{ posts: IPost[] }> = ({ posts }) => {
                 </CardContent>
                 <CardActions>
                   <Link href={`/toeic_info/post?id=${item.id}`}>
-                    <Typography sx={{ marginTop: "auto" }}>
-                      Read more
+                    <Typography sx={{ marginTop: "auto", marginLeft: 2 }}>
+                      Đọc bài này
                     </Typography>
                   </Link>
                 </CardActions>

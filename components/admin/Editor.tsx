@@ -1,71 +1,22 @@
 import { ImageResize } from "quill-image-resize-module-ts";
-
 import ReactQuill, { Quill } from "react-quill";
 import { useRef, useMemo, useCallback, useEffect, useContext } from "react";
 import { COLORS } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { imageValidation, uploadFiles } from "../../utils/fns";
 import { GlobalContext } from "../context/GlobalContext";
+import * as QuillTableUI from "quill-table-ui";
+
+Quill.register(
+  {
+    "modules/tableUI": QuillTableUI,
+  },
+  true
+);
 
 Quill.register("modules/imageResize", ImageResize);
 
 const Editor = ({ setContent }: any) => {
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ size: ["small", false, "large", "huge"] }],
-          ["bold", "italic", "underline", "strike"],
-          ["blockquote", "code-block"],
-          [{ color: COLORS }, { background: COLORS }],
-          [{ script: "sub" }, { script: "super" }],
-          [
-            { list: "ordered" },
-            { list: "bullet" },
-            { indent: "-1" },
-            { indent: "+1" },
-          ],
-          [{ direction: "rtl" }],
-          [{ align: [] }],
-          ["link", "image"],
-          ["clean"],
-        ],
-      },
-
-      imageResize: {
-        parchment: Quill.import("parchment"),
-        modules: ["Resize", "DisplaySize"],
-      },
-    }),
-    []
-  );
-
-  const formats = useMemo(
-    () => [
-      "header",
-      "bold",
-      "italic",
-      "underline",
-      "strike",
-      "blockquote",
-      "list",
-      "bullet",
-      "indent",
-      "link",
-      "image",
-      "video",
-      "color",
-      "background",
-      "direction",
-      "align",
-      "script",
-      "code-block",
-      "size",
-    ],
-    []
-  );
-
   const quillRef = useRef<ReactQuill>(null);
   const { setIsLoading } = useContext(GlobalContext);
   const imageHandler = useCallback(() => {
@@ -94,13 +45,65 @@ const Editor = ({ setContent }: any) => {
     };
   }, [setIsLoading]);
 
-  useEffect(() => {
-    const quill = quillRef.current;
-    if (!quill) return;
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ size: ["small", false, "large", "huge"] }],
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote", "code-block"],
+          [{ color: COLORS }, { background: COLORS }],
+          [{ script: "sub" }, { script: "super" }],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" },
+          ],
+          [{ direction: "rtl" }],
+          [{ align: [] }],
+          ["link", "image"],
+          ["clean"],
+          ["table"],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
 
-    let toolbar = quill.getEditor().getModule("toolbar");
-    toolbar.addHandler("image", imageHandler);
-  }, [imageHandler]);
+      imageResize: {
+        parchment: Quill.import("parchment"),
+        modules: ["Resize", "DisplaySize"],
+      },
+    }),
+    [imageHandler]
+  );
+
+  const formats = useMemo(
+    () => [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "blockquote",
+      "list",
+      "bullet",
+      "indent",
+      "link",
+      "image",
+      "video",
+      "color",
+      "background",
+      "direction",
+      "align",
+      "script",
+      "code-block",
+      "size",
+    ],
+    []
+  );
 
   return (
     <ReactQuill

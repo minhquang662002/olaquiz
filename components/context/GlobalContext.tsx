@@ -1,6 +1,4 @@
-import { useState, createContext, Dispatch, SetStateAction } from "react";
-import { FC } from "react";
-
+import { FC, useState, createContext } from "react";
 import LoadingLayout from "../layout/LoadingLayout";
 
 interface ILoadingState {

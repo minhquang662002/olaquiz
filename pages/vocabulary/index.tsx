@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import IntroTitle from "../../components/IntroTitle";
 interface Props {
   topics: { id: string; title: string; image: string }[];
 }
@@ -22,10 +23,28 @@ const VocabularyPage: NextPage<Props> = ({ topics }) => {
       <Head>
         <title>Từ vựng</title>
       </Head>
-      <Container maxWidth="lg" sx={{ marginTop: 5 }}>
+      <IntroTitle content="Từ vựng" />
+      <Container maxWidth="lg" sx={{ marginTop: 10, paddingBottom: 5 }}>
         <Grid container spacing={4}>
           {topics.map((item) => (
-            <Grid item key={item.id} xs={3}>
+            <Grid
+              item
+              key={item.id}
+              xs={3}
+              sx={{
+                cursor: "pointer",
+                transition: "0.2s",
+                "&:hover": {
+                  transform: "translateY(-8px)",
+                  filter: "brightness(90%)",
+                },
+              }}
+              onClick={() =>
+                router.push(
+                  `/vocabulary/${item.title.toLowerCase().split(" ").join("-")}`
+                )
+              }
+            >
               <Card sx={{ height: 250 }}>
                 <CardMedia
                   component="img"
@@ -37,16 +56,15 @@ const VocabularyPage: NextPage<Props> = ({ topics }) => {
                   <Typography
                     variant="h6"
                     fontWeight="bold"
-                    sx={{ cursor: "pointer" }}
+                    sx={{
+                      transition: "0.3s",
+
+                      "&:hover": {
+                        color: "#1976D2",
+                      },
+                    }}
                     onClick={() =>
                       router.push(
-                        {
-                          pathname: `/vocabulary/${item.title
-                            .toLowerCase()
-                            .split(" ")
-                            .join("-")}`,
-                          query: { id: item.id },
-                        },
                         `/vocabulary/${item.title
                           .toLowerCase()
                           .split(" ")

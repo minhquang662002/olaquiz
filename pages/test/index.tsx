@@ -1,4 +1,4 @@
-import { NextPage, GetStaticProps, GetServerSideProps } from "next";
+import { NextPage, GetServerSideProps } from "next";
 import { Container, Typography, Box, Button } from "@mui/material";
 import full from "../../asset/full-test.webp";
 import mini from "../../asset/mini-test.webp";
@@ -43,7 +43,7 @@ const index: NextPage<Props> = () => {
             </div>
             <Button
               variant="contained"
-              href="/test/mini_test"
+              href="/test/mini-test"
               sx={{ position: "absolute", right: 20, bottom: 20 }}
             >
               Start
@@ -67,7 +67,7 @@ const index: NextPage<Props> = () => {
             </div>
             <Button
               variant="contained"
-              href="/test/full_test"
+              href="/test/full-test"
               sx={{ position: "absolute", right: 20, bottom: 20 }}
             >
               Start
@@ -159,7 +159,6 @@ const index: NextPage<Props> = () => {
 
 export default index;
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const auth = await unstable_getServerSession(
     context.req,
@@ -175,9 +174,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   return {
-    props: {
-
-    }
-  }
-
+    props: {},
+  };
 };

@@ -1,56 +1,50 @@
-import { Dispatch } from 'react';
-import { IPost } from './types';
-import axios from "axios";
-import {toast} from "react-toastify"
-import { createPost } from "./api";
+import { Dispatch } from "react";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 
-
-
-export const uploadFiles = async (files: File[]) : Promise<string[]> => {
+export const uploadFiles = async (files: File[]): Promise<string[]> => {
   let upFiles = [];
   try {
     for (const item of files) {
-        const formData = new FormData();
-        formData.append("file", item);
-        formData.append("upload_preset", "a2npymha");
-        formData.append("cloud_name", "dd0w757jk");
-        formData.append("folder", "olaquiz");
+      const formData = new FormData();
+      formData.append("file", item);
+      formData.append("upload_preset", "a2npymha");
+      formData.append("cloud_name", "dd0w757jk");
+      formData.append("folder", "olaquiz");
 
-          const res = await axios.post(
-            "https://api.cloudinary.com/v1_1/dd0w757jk/upload",
-            formData
-          );
-          upFiles.push(res.data.url);
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dd0w757jk/upload",
+        formData
+      );
+      upFiles.push(res.data.url);
     }
-    
   } catch (error) {
     alert(error);
   }
-  return upFiles
+  return upFiles;
 };
 
 export const imageValidation = (file: File) => {
-  if(file.type !== "image/png" && file.type !== "image/jpeg"){
+  if (file.type !== "image/png" && file.type !== "image/jpeg") {
     return "Image format must be .png or .jpeg";
   }
-  if(file.size > 1024 * 1024 ){
+  if (file.size > 1024 * 1024) {
     return "Image size must under or equal to 1MB";
   }
-}
-
+};
 
 export const fileValidation = (file: File, extension: string[]) => {
-  if(extension.some(item => file.type != item)){
+  if (extension.some((item) => file.type != item)) {
     return `File format must be .${extension.join(",")}`;
   }
-}
+};
 
 export const sizeValidation = (file: File, size: number) => {
-  if(file.size > size * 1024 * 1024 ){
+  if (file.size > size * 1024 * 1024) {
     return `File's size must under or equal to ${size}MB`;
   }
-}
+};
 
 // export const postValidation = (preview, category, content) => {
 //   if (
@@ -67,11 +61,25 @@ export const sizeValidation = (file: File, size: number) => {
 //   }
 // }
 
+export const handlePreviewImage = (files: FileList, setState: any) => {
+  if (files && files.length > 0) {
+    let file = files[0];
+    const error = imageValidation(file);
+    if (error) {
+      return toast.error(error);
+    }
+    setState((state: any) => ({
+      ...state,
+      image: Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      }),
+    }));
+  }
+};
 
-
-export const handleCreatePost = async (post : IPost) => {
+export const handleCreatePost = async (post: any) => {
   try {
-    const {title, image, summary, category, content} = post;
+    const { title, image, summary, category, content } = post;
     if (
       !title.trim() ||
       !image ||
@@ -79,44 +87,38 @@ export const handleCreatePost = async (post : IPost) => {
       !category ||
       !content.trim()
     ) {
-      return toast.error("Missing post information!");
-    } 
-    
-    if(title.length > 100){
-      return toast.error("Title must only contain 50 characters!");
-    } 
-    if(summary.length > 350){
-      return toast.error("Summary must only contain 250 characters!")
+      return Promise.reject("Thiếu thông tin cho bài viết");
     }
-    else {
+
+    if (title.length > 100) {
+      return Promise.reject("Tiêu đề chỉ được tối đa 100 ký tự");
+    }
+    if (summary.length > 350) {
+      return Promise.reject("Tóm tắt tối đa chỉ được 250 ký tự");
+    } else {
       const urls = await uploadFiles([image as File]);
-      await createPost({ ...post, image: urls[0] });
+      if (!urls[0]) {
+        return toast.error("Lỗi");
+      }
+      await axios.post("/api/admin/post", { ...post, image: urls[0] });
     }
   } catch (error) {
-    return toast.error("Error");
+    console.log(error);
+    return Promise.reject("Lỗi hệ thống");
   }
 };
 
-
-export function createData(
-  id: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-  role: string,
-
-) {
-  return { id, email, firstName, lastName, role };
-}
-
-
-export const handleClose = (state:any, setOpen:Dispatch<boolean>, setOpenDialog:Dispatch<boolean>) => {
+export const handleClose = (
+  state: any,
+  setOpen: Dispatch<boolean>,
+  setOpenDialog: Dispatch<boolean>
+) => {
   if (Object.values(state).some((item) => item)) {
     setOpenDialog(true);
   } else {
     setOpen(false);
   }
-}
+};
 
 export const readExcel = (file: File) => {
   const promise = new Promise((resolve, reject) => {
@@ -137,84 +139,120 @@ export const readExcel = (file: File) => {
   return promise;
 };
 
-export const handleCreateTopic = async (topic: any, vocabularies: any, imageFiles:any, audioFiles: any) => {
+export const addToExcel = async (excel: any, files: any, type: string) => {
+  const fileUrls = await uploadFiles(files);
+  const irls = fileUrls.map((item) =>
+    Number(item.split("/").reverse()[0].split("_")[0])
+  );
+
+  return excel.map((item: any) => {
+    let pos = irls.indexOf(item.STT);
+    return {
+      ...item,
+      [type]: pos != -1 ? fileUrls[pos] : "",
+    };
+  });
+};
+
+export const handleCreateTopic = async (
+  topic: any,
+  vocabularies: any,
+  imageFiles: any,
+  audioFiles: any
+) => {
   try {
     if (!topic.title || !topic.image) {
-      return toast.error("Missing topic info!");
+      return Promise.reject("Thiếu thông tin cho bộ từ vựng");
     }
     if (!vocabularies.length) {
-      return toast.error("Excel file is required!");
+      return Promise.reject("Excel file is required!");
     }
-    if (!imageFiles.length || !audioFiles.length)
-      return toast.error("Image and audio files are required!");
+    if (!imageFiles.length || !audioFiles.length) {
+      return Promise.reject("Thiếu các file hình ảnh và audio");
+    }
+
     const prImgUrl = await uploadFiles([topic.image] as File[]);
-    const imageUrls = await uploadFiles(imageFiles as File[]);
-    const audioUrls = await uploadFiles(audioFiles as File[]);
-    const irls = imageUrls.map((item) =>
-      Number(item.split("/").reverse()[0].split("_")[0])
-    );
-    const arls = audioUrls.map((item) =>
-      Number(item.split("/").reverse()[0].split("_")[0])
-    );
-    vocabularies = vocabularies.map((item: any) => {
-      let imagePos = irls.indexOf(item.STT);
-      let audioPos = arls.indexOf(item.STT);
-      return {
-        ...item,
-        image: imagePos != -1 ? imageUrls[imagePos] : "",
-        audio: audioPos != -1 ? audioUrls[audioPos] : "",
-      };
+
+    vocabularies = await addToExcel(vocabularies, imageFiles, "image");
+    vocabularies = await addToExcel(vocabularies, audioFiles, "audio");
+
+    await axios.post("/api/admin/vocabulary", {
+      topic: { ...topic, image: prImgUrl[0] },
+      vocabularies,
     });
-
-    const newTopic = (await axios.post("/api/topic", { topic: {...topic, image: prImgUrl[0]}, vocabularies: vocabularies })).data
-    console.log(newTopic)
-
-    return toast.success("Created successfully!")
   } catch (error) {
-    console.log(error)
+    return Promise.reject((error as AxiosError)?.response?.data || "error");
   }
-}
+};
 
-export const handleCreateExam = async (testName: string, questions: any, imageFiles:any, audioFiles: any) => {
+export const handleCreateExam = async (
+  testName: string,
+  testType: string,
+  questions: any,
+  imageFiles: any,
+  audioFiles: any
+) => {
   try {
+    if (!testName) {
+      return Promise.reject("Thiếu thông tin cho bài thi");
+    }
 
-    const imageUrls = await uploadFiles(imageFiles as File[]);
-    const audioUrls = await uploadFiles(audioFiles as File[]);
-    const irls = imageUrls.map((item) =>
-      Number(item.split("/").reverse()[0].split("_")[0])
-    );
-    const arls = audioUrls.map((item) =>
-      Number(item.split("/").reverse()[0].split("_")[0])
-    );
-    questions = questions.map((item: any) => {
-      let imagePos = irls.indexOf(item.STT);
-      let audioPos = arls.indexOf(item.STT);
-      return {
-        ...item,
-        image: imagePos != -1 ? imageUrls[imagePos] : "",
-        audio: audioPos != -1 ? audioUrls[audioPos] : "",
-      };
+    questions = await addToExcel(questions, imageFiles, "image");
+    questions = await addToExcel(questions, audioFiles, "audio");
+
+    await axios.post(`/api/admin/test`, { questions, testName, testType });
+  } catch (error) {
+    return Promise.reject((error as AxiosError)?.response?.data || "error");
+  }
+};
+
+export const handleCreateExercise = async (
+  practiceName: string,
+  topic: string,
+  questions: any,
+  imageFiles: any
+) => {
+  try {
+    if (imageFiles.length > 0) {
+      questions = await addToExcel(questions, imageFiles, "image");
+    }
+
+    await axios.post("/api/admin/practice/exercise", {
+      topic,
+      questions,
+      practiceName,
     });
-    questions = questions.map(({STT, ...item}:any ) => item)
-
-    await axios.post(`/api/test`, {questions, testName})
-    return toast.success("Created successfully!")
   } catch (error) {
-    console.log(error)
+    return Promise.reject((error as AxiosError)?.response?.data || "error");
   }
-}
+};
 
-export const submitTest = async (score: number, userId: string, testId: string, answeredList: Map<number, string>) => {
+export const submitTest = async (
+  score: number,
+  userId: string,
+  testId: string,
+  answeredList: Map<number, string>
+) => {
   try {
-    const answeredArr = Array.from(answeredList, ([number, answer]) => ({number, answer}))
+    const answeredArr = Array.from(answeredList, ([number, answer]) => ({
+      number,
+      answer,
+    }));
     await axios.post("/api/result", {
       score,
       userId,
       testId,
-      answeredArr
-    })
+      answeredArr,
+    });
   } catch (error) {
-    console.log(error)
-    return toast.error("Error")
+    console.log(error);
+    return toast.error("Error");
   }
-}
+};
+
+export const handleFiles = (ref: any, files: FileList | null, type: string) => {
+  const fileArray = Array.from(files || []);
+  if (fileArray.some((item) => !item.type.startsWith(type)))
+    return toast.error(`Files must be ${type}`);
+  ref.current = fileArray;
+};

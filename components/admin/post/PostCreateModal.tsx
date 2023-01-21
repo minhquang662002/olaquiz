@@ -12,11 +12,14 @@ import {
 import type { NextPage } from "next";
 import { useState, useContext, SetStateAction, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { imageValidation, handleCreatePost } from "../../../utils/fns";
-import { toast } from "react-toastify";
+import { handleCreatePost, handlePreviewImage } from "../../../utils/fns";
 import { GlobalContext } from "../../context/GlobalContext";
 import CloseIcon from "@mui/icons-material/Close";
 import AlertDialog from "../../AlertDialog";
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import TestEditor from "../TestEditor";
+
 const ReactQuill = dynamic(() => import("../Editor"), {
   ssr: false,
 });
@@ -41,7 +44,7 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
     category: "",
   });
   const [content, setContent] = useState<string>("");
-
+  const queryClient = useQueryClient();
   const { setIsLoading } = useContext(GlobalContext);
   const [openDialog, setOpenDialog] = useState(false);
   const CATEGORIES = useMemo(
@@ -68,6 +71,25 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
       setOpen(false);
     }
   };
+
+  const createMutation = useMutation({
+    mutationFn: () => handleCreatePost({ ...post, content }),
+
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminData");
+      setIsLoading(false);
+      toast.success("Thêm thành công");
+      setOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error as string);
+      setIsLoading(false);
+    },
+  });
+
   return (
     <>
       {openDialog && (
@@ -134,21 +156,9 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
               <input
                 type="file"
                 accept=".png, .jpg, .jpeg"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    let file = e.target.files[0];
-                    const error = imageValidation(file);
-                    if (error) {
-                      return toast.error(error);
-                    }
-                    setPost((state) => ({
-                      ...state,
-                      image: Object.assign(file, {
-                        preview: URL.createObjectURL(file),
-                      }),
-                    }));
-                  }
-                }}
+                onChange={(e) =>
+                  handlePreviewImage(e.target.files as FileList, setPost)
+                }
               />
               <label>Tiêu mục:</label>
               <select
@@ -198,17 +208,13 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
             Nội dung bài viết
           </Typography>
           <ReactQuill setContent={setContent} />
-
+          <TestEditor />
           <Button
             variant="contained"
             sx={{ marginTop: 8, width: "100%" }}
-            onClick={() => {
-              setIsLoading(true);
-              handleCreatePost({ ...post, content });
-              setIsLoading(false);
-            }}
+            onClick={() => createMutation.mutate()}
           >
-            Create post
+            Tạo
           </Button>
         </Box>
       </Modal>

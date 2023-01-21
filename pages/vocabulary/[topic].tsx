@@ -60,14 +60,13 @@ const TopicPage: FC<any> = ({ vocabularies, topic }) => {
 export default TopicPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const id = ctx.query?.id;
   const topic = ctx.query?.topic as string;
 
   const vocabularies = await prisma.vocabulary.findMany({
     where: {
       topic: {
         title: {
-          contains: topic,
+          contains: topic.split("-").join(" "),
           mode: "insensitive",
         },
       },
