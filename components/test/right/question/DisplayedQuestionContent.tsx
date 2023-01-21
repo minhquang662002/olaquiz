@@ -7,9 +7,23 @@ import startImg from "../../../../asset/practice-in-progress.svg";
 import { DisplayedQuestionProps } from "../../../../utils/types";
 import QuestionOptionGroup from "./DisplayedQuestionOptionGroup";
 
-const DisplayedQuestionContent: FC<
-  DisplayedQuestionProps & { type?: string }
-> = ({ question, answeredList, setAnsweredList, start, setStart, type }) => {
+interface Props {
+  question: Question[];
+  answeredList: Map<number, string>;
+  start: boolean;
+  setStart: React.Dispatch<React.SetStateAction<boolean>>;
+  setAnsweredList: React.Dispatch<React.SetStateAction<Map<number, string>>>;
+  type?: string;
+}
+
+const DisplayedQuestionContent: FC<Props> = ({
+  question,
+  answeredList,
+  setAnsweredList,
+  start,
+  setStart,
+  type,
+}) => {
   return (
     <>
       {!start && type != "exercise" ? (

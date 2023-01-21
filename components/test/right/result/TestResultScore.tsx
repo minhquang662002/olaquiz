@@ -13,16 +13,7 @@ interface Props {
 }
 
 const TestResultScore: FC<any> = ({}) => {
-  const {
-    setHours,
-    setMinutes,
-    setSeconds,
-    score,
-    setScore,
-    setIsSubmitted,
-    setAnsweredList,
-    questions,
-  } = useContext(TestContext);
+  const studyContext = useContext(TestContext);
 
   return (
     <Paper
@@ -53,7 +44,10 @@ const TestResultScore: FC<any> = ({}) => {
           <CircularProgress
             variant="determinate"
             sx={{ color: "#19CE7A" }}
-            value={score / ((questions.length * 5) / 100)}
+            value={
+              studyContext?.score ||
+              0 / ((studyContext?.questions.length || 0 * 5) / 100)
+            }
             size={150}
           />
         </Box>
@@ -71,7 +65,7 @@ const TestResultScore: FC<any> = ({}) => {
           }}
         >
           <Typography variant="h4" component="div" sx={{ color: "#19CE7A" }}>
-            {score}
+            {studyContext?.score}
           </Typography>
         </Box>
       </Box>
@@ -85,9 +79,9 @@ const TestResultScore: FC<any> = ({}) => {
           padding: "5px",
         }}
         onClick={() => {
-          setIsSubmitted(false);
-          setAnsweredList(new Map());
-          setScore(0);
+          studyContext?.setIsSubmitted(false);
+          studyContext?.setAnsweredList(new Map());
+          studyContext?.setScore(0);
           // setHours(2);
           // setMinutes(0);
           // setSeconds(0);

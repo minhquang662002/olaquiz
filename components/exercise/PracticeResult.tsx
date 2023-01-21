@@ -1,12 +1,21 @@
 import { Box } from "@mui/material";
 
-const PracticeResult = ({ questions, answeredList }) => {
-  const totalCorrect = Array.from(answeredList).filter(
-    ([key, value]) => questions[key - 1]?.answer == value
-  ).length;
-  const totalIncorrect = Array.from(answeredList).filter(
-    ([key, value]) => questions[key - 1]?.answer != value
-  ).length;
+interface Props {
+  questions: any;
+  answeredList?: Map<number, string>;
+}
+
+const PracticeResult: React.FC<Props> = ({ questions, answeredList }) => {
+  const totalCorrect = answeredList
+    ? Array.from(answeredList).filter(
+        ([key, value]) => questions[key - 1]?.answer == value
+      ).length
+    : 0;
+  const totalIncorrect = answeredList
+    ? Array.from(answeredList).filter(
+        ([key, value]) => questions[key - 1]?.answer != value
+      ).length
+    : 0;
 
   return (
     <Box

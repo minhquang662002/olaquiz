@@ -10,7 +10,7 @@ interface Props {
 }
 
 const TestResultAnswer: FC<any> = () => {
-  const { questions, answeredList } = useContext(TestContext);
+  const studyContext = useContext(TestContext);
   return (
     <Paper
       sx={{
@@ -19,20 +19,22 @@ const TestResultAnswer: FC<any> = () => {
         paddingY: 3,
       }}
     >
-      {questions.map((question: Question) => (
+      {studyContext?.questions.map((question: Question) => (
         <Fragment key={question.id}>
           {question.group &&
-            question.group != questions[question.STT - 2].group && (
+            question.group !=
+              studyContext.questions[(question.STT as number) - 2].group && (
               <div>Question {question.group}</div>
             )}
           <TestResultQuestion
-            questions={questions}
+            questions={studyContext.questions}
             question={question}
-            answeredList={answeredList}
+            answeredList={studyContext.answeredList}
           />
           {question.explaination &&
             question.group &&
-            !questions[question.STT - 2]?.explaination && (
+            !studyContext.questions[(question.STT as number) - 2]
+              ?.explaination && (
               <>
                 <br />
                 <Paper

@@ -5,7 +5,6 @@ import { memo, FC, Dispatch, SetStateAction } from "react";
 import { Question } from "@prisma/client";
 
 interface Props {
-  isSubmitted: boolean;
   start: boolean;
   displayedNumber: number;
   questions: Question[];
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const DisplayedQuestionButtonGroup: FC<Props> = ({
-  isSubmitted,
   start,
   displayedNumber,
   questions,
@@ -21,7 +19,7 @@ const DisplayedQuestionButtonGroup: FC<Props> = ({
 }) => {
   return (
     <>
-      {!isSubmitted && start && (
+      {start && (
         <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
           {displayedNumber >= 1 && (
             <Button

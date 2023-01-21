@@ -31,23 +31,25 @@ const DisplayedQuestion: FC<any> = ({ type }) => {
           />
         )}
       </Box>
-      <DisplayedQuestionContent
-        start={studyContext?.start}
-        setStart={studyContext?.setStart}
-        isSubmitted={studyContext?.isSubmitted}
-        setIsSubmitted={studyContext?.setIsSubmitted}
-        question={studyContext?.selectedQuestion}
-        setAnsweredList={studyContext?.setAnsweredList}
-        answeredList={studyContext?.answeredList}
-        type={type}
-      />
-      <DisplayedQuestionButtonGroup
-        start={studyContext?.start}
-        isSubmitted={studyContext?.isSubmitted}
-        displayedNumber={studyContext?.displayedNumber}
-        questions={studyContext?.questions}
-        setDisplayedNumber={studyContext?.setDisplayedNumber}
-      />
+      {type != "exercise" && (
+        <DisplayedQuestionContent
+          start={studyContext?.start!}
+          setStart={studyContext?.setStart!}
+          question={studyContext?.selectedQuestion!}
+          setAnsweredList={studyContext?.setAnsweredList!}
+          answeredList={studyContext?.answeredList!}
+          type={type}
+        />
+      )}
+
+      {studyContext?.isSubmitted && (
+        <DisplayedQuestionButtonGroup
+          start={studyContext?.start}
+          displayedNumber={studyContext?.displayedNumber}
+          questions={studyContext?.questions}
+          setDisplayedNumber={studyContext?.setDisplayedNumber!}
+        />
+      )}
     </Box>
   );
 };
