@@ -1,4 +1,4 @@
-import { RegisterProps, IPost } from "./types";
+import { RegisterProps } from "./types";
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
