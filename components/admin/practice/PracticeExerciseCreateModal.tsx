@@ -48,7 +48,7 @@ const PracticeExerciseCreateModal: FC<Props> = ({ open, setOpen }) => {
       setOpen(false);
     },
     onError: (error) => {
-      toast.error(error);
+      toast.error(error as string);
     },
   });
   return (
