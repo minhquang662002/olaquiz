@@ -69,7 +69,6 @@ const DisplayedQuestionContent: FC<Props> = ({
                 item={item}
                 setAnsweredList={setAnsweredList}
                 answeredList={answeredList}
-                type={type}
               />
             );
           })}
