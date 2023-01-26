@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import React from "react";
 import { register } from "../../utils/api";
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
 
 const validationSchema = yup.object({
   firstName: yup.string().required("This field is required"),
@@ -25,6 +27,7 @@ const validationSchema = yup.object({
 const RegisterForm: NextPage<{
   setIsHavingAccount: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setIsHavingAccount }) => {
+  const { setIsLoading } = useContext(GlobalContext);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -36,7 +39,9 @@ const RegisterForm: NextPage<{
     validationSchema: validationSchema,
 
     onSubmit: (values) => {
+      setIsLoading(true);
       register(values);
+      setIsLoading(false);
     },
   });
 
@@ -53,7 +58,7 @@ const RegisterForm: NextPage<{
       }}
     >
       <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "bold" }}>
-        SIGN UP
+        ĐĂNG KÝ
       </Typography>
       <form
         onSubmit={formik.handleSubmit}

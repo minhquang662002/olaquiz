@@ -18,19 +18,6 @@ export const register = async (formValue: RegisterProps) => {
   }
 };
 
-// export const createCategory = async (category: Prisma.CategoryCreateInput) => {
-//     try {
-//       if(!category.url.trim() || !category.name.trim() || !category.type){
-//         return toast.error("Missing field!");
-//       }
-//       const res = await axios.post("/api/category/createCategory", category)
-//       return toast.success(res.data)
-//     } catch (error) {
-//       //@ts-ignore
-//       return toast.error(error?.response?.data as string)
-//     }
-//   }
-
 export const createTopic = async (topic: any, vocabularies: any) => {
   try {
     await axios.post("/api/vocabulary/createVocabulary", {

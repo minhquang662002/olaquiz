@@ -1,4 +1,4 @@
-import { FC, useState, useContext } from "react";
+import { FC, useState, useContext, memo } from "react";
 import { Question } from "@prisma/client";
 import { Box, Typography, Paper, Button } from "@mui/material";
 import { ChevronLeft, ChevronRight, RestartAlt } from "@mui/icons-material";
@@ -7,20 +7,32 @@ import { GlobalContext } from "../../context/GlobalContext";
 import QuestionPaletteButton from "./QuestionPaletteButton";
 import { TestContext } from "../../context/TestContext";
 import PracticeResult from "../../exercise/PracticeResult";
+import { TimerContext } from "../../context/TimerContext";
 
 const QuestionPalette: FC<{ type: string }> = ({ type }) => {
   const [page, setPage] = useState(0);
   const { setIsLoading } = useContext(GlobalContext);
-  const studyContext = useContext(TestContext);
+  const {
+    questions,
+    setAnsweredList,
+    isSubmitted,
+    answeredList,
+    displayedNumber,
+    setDisplayedNumber,
+    start,
+    handleSubmitTest,
+  } = useContext(TestContext);
+
+  const restart = () => {
+    setAnsweredList(new Map());
+  };
+  const { hours, minutes, seconds } = useContext(TimerContext);
 
   const submit = async () => {
     setIsLoading(true);
-    await studyContext?.handleSubmit();
-    setIsLoading(false);
-  };
 
-  const restart = () => {
-    studyContext?.setAnsweredList(new Map());
+    await handleSubmitTest(hours * 3600 + minutes * 60 + seconds);
+    setIsLoading(false);
   };
 
   return (
@@ -38,7 +50,9 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
           marginBottom: 2,
         }}
       >
-        <Typography>Question Palette</Typography>
+        <Typography variant="body2" fontWeight="bolder">
+          Bảng Câu Hỏi
+        </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <ChevronLeft
             sx={{
@@ -67,10 +81,7 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              if (
-                (page + 1) * 24 <
-                (studyContext?.questions?.length as number)
-              ) {
+              if ((page + 1) * 24 < (questions?.length as number)) {
                 setPage((state) => state + 1);
               }
             }}
@@ -85,29 +96,27 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
           gap: 1,
         }}
       >
-        {studyContext?.questions
-          ?.slice(page * 24, (page + 1) * 24)
-          .map((item: Question) => (
-            <QuestionPaletteButton
-              key={item.id}
-              isSubmitted={studyContext.isSubmitted}
-              answeredList={studyContext.answeredList}
-              displayedNumber={studyContext.displayedNumber}
-              item={item}
-              questions={studyContext.questions}
-              setDisplayedNumber={studyContext.setDisplayedNumber}
-              type={type}
-            />
-          ))}
+        {questions?.slice(page * 24, (page + 1) * 24).map((item: Question) => (
+          <QuestionPaletteButton
+            key={item.id}
+            isSubmitted={isSubmitted}
+            answeredList={answeredList}
+            displayedNumber={displayedNumber}
+            item={item}
+            questions={questions}
+            setDisplayedNumber={setDisplayedNumber}
+            type={type}
+          />
+        ))}
       </Box>
       <br />
       {type == "test" ? (
         <>
           <TestProgress
-            value={studyContext?.answeredList.size || 0}
-            total={studyContext?.questions.length || 0}
+            value={answeredList.size || 0}
+            total={questions.length || 0}
           />
-          {studyContext?.start && !studyContext.isSubmitted && (
+          {start && !isSubmitted && (
             <Button
               sx={{
                 background: "#E4E6ED",
@@ -131,10 +140,7 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
         </>
       ) : (
         <>
-          <PracticeResult
-            questions={studyContext?.questions}
-            answeredList={studyContext?.answeredList}
-          />
+          <PracticeResult questions={questions} answeredList={answeredList} />
           <Button
             sx={{
               display: "flex",
@@ -168,4 +174,4 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
   );
 };
 
-export default QuestionPalette;
+export default memo(QuestionPalette);

@@ -20,14 +20,14 @@ export default async function handler(
       const session = await getToken({ req });
       if (!session) return res.status(400).json("Cần đăng nhập");
 
-      const { score, testId, answeredArr } = req.body;
+      const { score, testId, answeredArr, time } = req.body;
       await prisma.result.create({
         data: {
           testId,
           //@ts-ignore
           userId: session?.user?.id as string,
           score,
-          time: "test",
+          remainTime: time,
           answer: {
             createMany: {
               data: answeredArr,

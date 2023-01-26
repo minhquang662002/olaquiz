@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
 
 const validationSchema = yup.object({
   email: yup
@@ -16,6 +18,7 @@ const validationSchema = yup.object({
 const LoginForm: NextPage<{
   setIsHavingAccount: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setIsHavingAccount }) => {
+  const { setIsLoading } = useContext(GlobalContext);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -23,10 +26,12 @@ const LoginForm: NextPage<{
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsLoading(true);
       const res = await signIn("credentials", { ...values, redirect: false });
       if (res?.error) {
         toast.error(res.error);
       }
+      setIsLoading(false);
     },
   });
 
@@ -43,7 +48,7 @@ const LoginForm: NextPage<{
       }}
     >
       <Typography variant="h6" sx={{ textAlign: "center" }}>
-        SIGN IN
+        ĐĂNG NHẬP
       </Typography>
       <form
         onSubmit={formik.handleSubmit}

@@ -13,9 +13,9 @@ export default async function handler(
           id: id as string,
         },
       });
-      return res.status(200).json("Deleted successfully!");
+      return res.status(200).json("Xóa thành công!");
     }
   } catch (error) {
-    return res.status(500).json("Internal server error");
+    return res.status(500).json("Lỗi hệ thống");
   }
 }

@@ -42,6 +42,6 @@ export default async function handler(
 
     return res.status(200).json(newUser);
   } catch (error) {
-    return res.status(500).json(JSON.stringify(error));
+    return res.status(500).json("Lỗi hệ thống");
   }
 }

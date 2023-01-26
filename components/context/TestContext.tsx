@@ -1,17 +1,16 @@
 import { Answer, Question } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import {
   useState,
   createContext,
   Dispatch,
   SetStateAction,
   FC,
-  useCallback,
   useMemo,
+  useCallback,
 } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { submitTest } from "../../utils/fns";
-
+import { useRouter } from "next/router";
 export interface StudyContext {
   displayedNumber: number;
   answeredList: Map<number, string>;
@@ -19,16 +18,30 @@ export interface StudyContext {
   start: boolean;
   questions: Question[];
   score: number;
-  selectedQuestion: Question[];
   setDisplayedNumber: Dispatch<SetStateAction<number>>;
   setAnsweredList: Dispatch<SetStateAction<Map<number, string>>>;
   setIsSubmitted: Dispatch<SetStateAction<boolean>>;
   setStart: Dispatch<SetStateAction<boolean>>;
   setScore: Dispatch<SetStateAction<number>>;
-  handleSubmit: () => Promise<void>;
+  handleSubmitTest: (time: number) => void;
 }
 
-const TestContext = createContext<StudyContext | null>(null);
+const TestContext = createContext<StudyContext>({
+  displayedNumber: 0,
+  setDisplayedNumber: () => {},
+  answeredList: new Map(),
+  isSubmitted: false,
+  setIsSubmitted: () => {},
+  score: 0,
+  setScore: () => {},
+  start: false,
+  setStart: () => {},
+  questions: [],
+  setAnsweredList: function (value: SetStateAction<Map<number, string>>): void {
+    throw new Error("Function not implemented.");
+  },
+  handleSubmitTest: () => {},
+});
 
 const TestContextProvider: FC<{
   children: React.ReactNode;
@@ -50,16 +63,6 @@ const TestContextProvider: FC<{
   const session = useSession();
   const router = useRouter();
 
-  const selectedQuestion = useMemo(() => {
-    return questions[displayedNumber]?.group
-      ? questions.filter((cur: Question) => {
-          if (cur.group === questions[displayedNumber]?.group) {
-            return cur;
-          }
-        })
-      : [questions[displayedNumber]];
-  }, [displayedNumber, questions]);
-
   const RESULT = useMemo(
     () =>
       Array.from(answeredList.keys()).reduce((prev: number, cur: any) => {
@@ -69,25 +72,22 @@ const TestContextProvider: FC<{
     [questions, answeredList]
   );
 
-  const handleSubmit = useCallback(async () => {
-    await submitTest(
-      RESULT,
-      session.data?.user.id as string,
-      router.query.testId as string,
-      answeredList
-    );
-    setScore(RESULT);
-    setIsSubmitted(true);
-    setStart(false);
-  }, [
-    RESULT,
-    answeredList,
-    router.query.testId,
-    session.data?.user.id,
-    setScore,
-    setIsSubmitted,
-    setStart,
-  ]);
+  const handleSubmitTest = useCallback(
+    async (time: number) => {
+      setStart(false);
+      await submitTest(
+        RESULT,
+        session.data?.user.id as string,
+        router.query.testId as string,
+        answeredList,
+        time
+      );
+
+      setScore(RESULT);
+      setIsSubmitted(true);
+    },
+    [RESULT, answeredList, router.query.testId, session.data?.user.id]
+  );
 
   return (
     <TestContext.Provider
@@ -103,8 +103,7 @@ const TestContextProvider: FC<{
         setScore,
         setStart,
         questions,
-        selectedQuestion,
-        handleSubmit,
+        handleSubmitTest,
       }}
     >
       {children}

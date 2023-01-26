@@ -27,8 +27,8 @@ const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
             <Grid item key={item.id}>
               <Card
                 sx={{
-                  width: 300,
-                  height: 500,
+                  width: 276,
+
                   display: "flex",
                   flexDirection: "column",
                 }}
@@ -36,14 +36,35 @@ const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
                 <CardMedia component="img" src={item.image as string} />
 
                 <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" fontWeight="bold">
-                    {item.title}
-                  </Typography>
+                  <Link href={`/toeic_tips/post?id=${item.id}`}>
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      sx={{
+                        marginTop: "auto",
+                        "&:hover": {
+                          color: "#1976D2",
+                        },
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  </Link>
                   <Typography sx={{ fontSize: 12 }}>{item.summary}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Link href={`/toeic_info/post?id=${item.id}`}>
-                    <Typography sx={{ marginTop: "auto", marginLeft: 2 }}>
+                  <Link href={`/toeic_tips/post?id=${item.id}`}>
+                    <Typography
+                      sx={{
+                        marginTop: "auto",
+                        marginLeft: 1,
+                        fontSize: 13,
+                        color: "#1976D2",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
                       Đọc bài này
                     </Typography>
                   </Link>

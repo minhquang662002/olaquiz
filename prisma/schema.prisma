@@ -92,7 +92,7 @@ model Exercise {
 
 model Question {
   id           String    @id @default(uuid())
-  STT          Int?
+  STT          Int
   image        String?
   audio        String?
   paragraph    String?
@@ -111,15 +111,15 @@ model Question {
 }
 
 model Result {
-  id        String   @id @default(uuid())
-  score     Int
-  time      String
-  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?
-  Test      Test?    @relation(fields: [testId], references: [id])
-  testId    String?
-  answer    Answer[]
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  score      Int
+  User       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String?
+  Test       Test?    @relation(fields: [testId], references: [id])
+  testId     String?
+  answer     Answer[]
+  createdAt  DateTime @default(now())
+  remainTime Int
 }
 
 model Answer {

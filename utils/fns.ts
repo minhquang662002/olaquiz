@@ -46,21 +46,6 @@ export const sizeValidation = (file: File, size: number) => {
   }
 };
 
-// export const postValidation = (preview, category, content) => {
-//   if (
-//     !preview.title.trim() ||
-//     !preview.image ||
-//     !preview.summary.trim() ||
-//     !category ||
-//     !content.trim()
-//   ) {
-//     return toast.error("Missing info!");
-//   } else {
-//     const image = await uploadFiles([preview.image]);
-//     await createPost({ ...preview, image: image[0], category, content });
-//   }
-// }
-
 export const handlePreviewImage = (files: FileList, setState: any) => {
   if (files && files.length > 0) {
     let file = files[0];
@@ -93,8 +78,8 @@ export const handleCreatePost = async (post: any) => {
     if (title.length > 100) {
       return Promise.reject("Tiêu đề chỉ được tối đa 100 ký tự");
     }
-    if (summary.length > 350) {
-      return Promise.reject("Tóm tắt tối đa chỉ được 250 ký tự");
+    if (summary.length > 500) {
+      return Promise.reject("Tóm tắt tối đa chỉ được 500 ký tự");
     } else {
       const urls = await uploadFiles([image as File]);
       if (!urls[0]) {
@@ -103,7 +88,6 @@ export const handleCreatePost = async (post: any) => {
       await axios.post("/api/admin/post", { ...post, image: urls[0] });
     }
   } catch (error) {
-    console.log(error);
     return Promise.reject("Lỗi hệ thống");
   }
 };
@@ -231,7 +215,8 @@ export const submitTest = async (
   score: number,
   userId: string,
   testId: string,
-  answeredList: Map<number, string>
+  answeredList: Map<number, string>,
+  time: number
 ) => {
   try {
     const answeredArr = Array.from(answeredList, ([number, answer]) => ({
@@ -243,10 +228,10 @@ export const submitTest = async (
       userId,
       testId,
       answeredArr,
+      time,
     });
   } catch (error) {
-    console.log(error);
-    return toast.error("Error");
+    return toast.error("Lỗi hệ thống");
   }
 };
 

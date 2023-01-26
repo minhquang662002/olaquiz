@@ -1,20 +1,25 @@
-import { FC, Dispatch, SetStateAction } from "react";
+import { FC } from "react";
 import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useContext } from "react";
 import { TestContext } from "../../../context/TestContext";
+import { TimerContext } from "../../../context/TimerContext";
+import { useRouter } from "next/router";
 
-interface Props {
-  total: number;
-  score: number;
-  setScore: Dispatch<SetStateAction<number>>;
-  setIsSubmitted: Dispatch<SetStateAction<boolean>>;
-  setAnsweredList: Dispatch<SetStateAction<Map<number, string>>>;
-}
-
-const TestResultScore: FC<any> = ({}) => {
-  const studyContext = useContext(TestContext);
-
+const TestResultScore: FC = () => {
+  const { score, setScore, setIsSubmitted, questions, setAnsweredList } =
+    useContext(TestContext);
+  const { setHours, setMinutes, setSeconds } = useContext(TimerContext);
+  const router = useRouter();
+  const restart = () => {
+    setIsSubmitted(false);
+    setAnsweredList(new Map());
+    setScore(0);
+    setHours(router.query.testType == "mini-test" ? 1 : 2);
+    setMinutes(0);
+    setSeconds(0);
+    console.log("restart");
+  };
   return (
     <Paper
       sx={{
@@ -45,8 +50,9 @@ const TestResultScore: FC<any> = ({}) => {
             variant="determinate"
             sx={{ color: "#19CE7A" }}
             value={
-              studyContext?.score ||
-              0 / ((studyContext?.questions.length || 0 * 5) / 100)
+              score
+                ? score / ((questions.length * 5) / 100)
+                : 0 / ((questions.length || 0 * 5) / 100)
             }
             size={150}
           />
@@ -65,7 +71,7 @@ const TestResultScore: FC<any> = ({}) => {
           }}
         >
           <Typography variant="h4" component="div" sx={{ color: "#19CE7A" }}>
-            {studyContext?.score}
+            {score}
           </Typography>
         </Box>
       </Box>
@@ -78,14 +84,7 @@ const TestResultScore: FC<any> = ({}) => {
           width: 150,
           padding: "5px",
         }}
-        onClick={() => {
-          studyContext?.setIsSubmitted(false);
-          studyContext?.setAnsweredList(new Map());
-          studyContext?.setScore(0);
-          // setHours(2);
-          // setMinutes(0);
-          // setSeconds(0);
-        }}
+        onClick={restart}
       >
         LÀM LẠI
       </Button>

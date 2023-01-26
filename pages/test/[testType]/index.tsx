@@ -41,6 +41,10 @@ const TestTypePage: NextPage<Props> = ({ tests }) => {
                   display: "flex",
                   justifyContent: "space-between",
                   padding: 2,
+                  transition: "0.4s",
+                  "&:hover": {
+                    boxShadow: "0 4px 6px #e8eaf1",
+                  },
                 }}
               >
                 <Typography variant="h6">{item.name}</Typography>

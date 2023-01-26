@@ -18,9 +18,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import AlertDialog from "../../AlertDialog";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import TestEditor from "../TestEditor";
 
-const ReactQuill = dynamic(() => import("../Editor"), {
+const TestEditor = dynamic(() => import("../Editor"), {
   ssr: false,
 });
 
@@ -44,6 +43,7 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
     category: "",
   });
   const [content, setContent] = useState<string>("");
+
   const queryClient = useQueryClient();
   const { setIsLoading } = useContext(GlobalContext);
   const [openDialog, setOpenDialog] = useState(false);
@@ -207,8 +207,7 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
           <Typography variant="h6" fontWeight="500">
             Nội dung bài viết
           </Typography>
-          <ReactQuill setContent={setContent} />
-          <TestEditor />
+          <TestEditor content={content} setContent={setContent} />
           <Button
             variant="contained"
             sx={{ marginTop: 8, width: "100%" }}

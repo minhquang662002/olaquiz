@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, memo } from "react";
 import { QuestionPalleteButtonProps } from "../../../utils/types";
 
 const QuestionPaletteButton: FC<QuestionPalleteButtonProps> = ({
@@ -10,6 +10,7 @@ const QuestionPaletteButton: FC<QuestionPalleteButtonProps> = ({
   setDisplayedNumber,
   type,
 }) => {
+  console.log("btn re render");
   const buttonStyle = useMemo(() => {
     return type == "test"
       ? `${
@@ -80,4 +81,4 @@ const QuestionPaletteButton: FC<QuestionPalleteButtonProps> = ({
   );
 };
 
-export default QuestionPaletteButton;
+export default memo(QuestionPaletteButton);

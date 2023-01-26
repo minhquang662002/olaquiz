@@ -4,26 +4,71 @@ import { Container, Box } from "@mui/system";
 import Head from "next/head";
 import { Post } from "@prisma/client";
 import IntroTitle from "../../components/IntroTitle";
+import { Divider, Typography } from "@mui/material";
+import Link from "next/link";
 interface Props {
   post: Post;
+  relatedPosts: Post[];
 }
 
-const PostPage: NextPage<Props> = ({ post }) => {
+const PostPage: NextPage<Props> = ({ post, relatedPosts }) => {
   return (
     <>
       <Head>
         <title>{post.title}</title>
       </Head>
       <IntroTitle content={`${post.title}`} />
-      <Box>
-        <Container maxWidth="lg">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: post.content,
-            }}
-          />
-        </Container>
-      </Box>
+
+      <Container
+        maxWidth="lg"
+        sx={{ display: "flex", gap: 2, paddingBottom: 5 }}
+      >
+        <div
+          style={{
+            background: "white",
+            padding: "30px",
+            borderRadius: "10px",
+            flexBasis: "40%",
+            flexGrow: 1,
+          }}
+          dangerouslySetInnerHTML={{
+            __html: post.content,
+          }}
+        />
+        <Box
+          sx={{
+            background: "white",
+            flexBasis: 1,
+            flexGrow: 1,
+            padding: "10px",
+            alignSelf: "self-start",
+          }}
+        >
+          <Typography variant="h6" fontWeight="bolder" color="#1976D2">
+            Bài viết liên quan
+          </Typography>
+          {relatedPosts?.map((item) => (
+            <>
+              <Link href={`/toeic_info/post?id=${item.id}`}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      fontWeight: "bold",
+                      textDecoration: "underline",
+                    },
+                  }}
+                  key={item.id}
+                >
+                  {item.title}
+                </Typography>
+              </Link>
+              <Divider sx={{ marginY: 1 }} />
+            </>
+          ))}
+        </Box>
+      </Container>
     </>
   );
 };
@@ -35,10 +80,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     query: { id },
   } = context;
   const post = await prisma.post.findFirst({ where: { id: id as string } });
+  const relatedPosts = await prisma.post.findMany({
+    where: {
+      AND: [
+        {
+          NOT: {
+            id: id as string,
+          },
+        },
+        { category: "/toeic_info" },
+      ],
+    },
+    take: 10,
+  });
 
   return {
     props: {
       post: JSON.parse(JSON.stringify(post)),
+      relatedPosts: JSON.parse(JSON.stringify(relatedPosts)),
     },
   };
 };

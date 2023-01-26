@@ -4,13 +4,8 @@ import TestResultQuestion from "./TestResultQuestion";
 import { Paper, Typography } from "@mui/material";
 import { TestContext } from "../../../context/TestContext";
 
-interface Props {
-  questions: Question[];
-  answeredList: Map<number, string>;
-}
-
-const TestResultAnswer: FC<any> = () => {
-  const studyContext = useContext(TestContext);
+const TestResultAnswer: FC = () => {
+  const { questions, answeredList } = useContext(TestContext);
   return (
     <Paper
       sx={{
@@ -19,22 +14,20 @@ const TestResultAnswer: FC<any> = () => {
         paddingY: 3,
       }}
     >
-      {studyContext?.questions.map((question: Question) => (
+      {questions.map((question: Question) => (
         <Fragment key={question.id}>
           {question.group &&
-            question.group !=
-              studyContext.questions[(question.STT as number) - 2].group && (
+            question.group != questions[(question.STT as number) - 2].group && (
               <div>Question {question.group}</div>
             )}
           <TestResultQuestion
-            questions={studyContext.questions}
+            questions={questions}
             question={question}
-            answeredList={studyContext.answeredList}
+            answeredList={answeredList}
           />
           {question.explaination &&
             question.group &&
-            !studyContext.questions[(question.STT as number) - 2]
-              ?.explaination && (
+            !questions[(question.STT as number) - 2]?.explaination && (
               <>
                 <br />
                 <Paper

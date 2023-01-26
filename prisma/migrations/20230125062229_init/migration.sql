@@ -90,7 +90,7 @@ CREATE TABLE "Exercise" (
 -- CreateTable
 CREATE TABLE "Question" (
     "id" TEXT NOT NULL,
-    "STT" INTEGER,
+    "STT" INTEGER NOT NULL,
     "image" TEXT,
     "audio" TEXT,
     "paragraph" TEXT,
@@ -112,10 +112,10 @@ CREATE TABLE "Question" (
 CREATE TABLE "Result" (
     "id" TEXT NOT NULL,
     "score" INTEGER NOT NULL,
-    "time" TEXT NOT NULL,
     "userId" TEXT,
     "testId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "remainTime" INTEGER NOT NULL,
 
     CONSTRAINT "Result_pkey" PRIMARY KEY ("id")
 );

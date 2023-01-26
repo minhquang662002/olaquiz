@@ -2,13 +2,15 @@ import { NextPage, GetServerSideProps } from "next";
 import { prisma } from "../../../utils/db";
 import Head from "next/head";
 import type { Answer, Question, Result, User } from "@prisma/client";
-import { Container } from "@mui/material";
-import { useState } from "react";
+import { Container, Typography } from "@mui/material";
 import TestDisplayRight from "../../../components/test/right/TestDisplayRight";
-import TestDisplayLeft from "../../../components/test/left/TestDisplayLeft";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
 import { TestContextProvider } from "../../../components/context/TestContext";
+import { TimerContextProvider } from "../../../components/context/TimerContext";
+import QuestionPalette from "../../../components/test/left/QuestionPalette";
+import Leaderboard from "../../../components/test/left/Leaderboard";
+import { getSession } from "next-auth/react";
 
 interface Props {
   questions: Question[];
@@ -19,16 +21,23 @@ interface Props {
 
 const Test: NextPage<Props> = ({ questions, result, ranking, testName }) => {
   return (
-    <TestContextProvider result={result} questions={questions}>
+    <>
       <Head>
         <title>Bài thi</title>
       </Head>
-      <Container maxWidth="lg" sx={{ display: "flex", gap: 2, marginY: 2 }}>
-        <TestDisplayLeft ranking={ranking} testName={testName} />
-
-        <TestDisplayRight />
-      </Container>
-    </TestContextProvider>
+      <TestContextProvider result={result} questions={questions}>
+        <TimerContextProvider result={result}>
+          <Container maxWidth="lg" sx={{ display: "flex", gap: 2, marginY: 2 }}>
+            <div>
+              <Typography>{testName}</Typography>
+              <QuestionPalette type="test" />
+              <Leaderboard ranking={ranking} />
+            </div>
+            <TestDisplayRight />
+          </Container>
+        </TimerContextProvider>{" "}
+      </TestContextProvider>
+    </>
   );
 };
 
@@ -36,6 +45,7 @@ export default Test;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const auth = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
+
   if (!auth) {
     return {
       redirect: {
@@ -87,13 +97,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   });
 
   const ranking =
-    await prisma.$queryRaw`select max("Result"."score") as score, "User"."avatar", "User"."firstName", 
-  "User"."lastName" from "Result" 
- inner join "User" on "User".id = "Result"."userId"
- inner join "Test" on "Test".id = "Result"."testId"
- group by  "User"."avatar", "User"."firstName", 
-  "User"."lastName", "Result"."testId"
- having "Result"."testId" = ${testId} order by score desc limit 10`;
+    await prisma.$queryRaw`select max("Result"."score") as score, "User"."avatar", "User"."firstName",
+    "User"."lastName" from "Result"
+   inner join "User" on "User".id = "Result"."userId"
+   inner join "Test" on "Test".id = "Result"."testId"
+   group by  "User"."avatar", "User"."firstName",
+    "User"."lastName", "Result"."testId"
+   having "Result"."testId" = ${testId} order by score desc limit 10`;
 
   return {
     props: {

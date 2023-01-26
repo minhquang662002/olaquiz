@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import startImg from "../../../../asset/practice-in-progress.svg";
-import { DisplayedQuestionProps } from "../../../../utils/types";
 import QuestionOptionGroup from "./DisplayedQuestionOptionGroup";
 
 interface Props {

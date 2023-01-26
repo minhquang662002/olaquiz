@@ -1,20 +1,15 @@
-import {
-  FC,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useContext,
-  memo,
-} from "react";
+import { FC, useEffect, useRef, useCallback, useContext, memo } from "react";
 import { Typography } from "@mui/material";
-import { StudyContext, TestContext } from "../context/TestContext";
+import { TestContext } from "../context/TestContext";
+import { GlobalContext } from "../context/GlobalContext";
+import { TimerContext } from "../context/TimerContext";
 
-const Timer: FC<any> = () => {
-  const [hours, setHours] = useState(1);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const studyContext = useContext<StudyContext | null>(TestContext);
+const Timer: FC = () => {
+  const { handleSubmitTest, start } = useContext(TestContext);
+  const { setIsLoading } = useContext(GlobalContext);
+
+  const { hours, minutes, seconds, setHours, setMinutes, setSeconds } =
+    useContext(TimerContext);
   const timerRef = useRef<any>();
   const timeChange = useCallback(() => {
     if (seconds != 0) {
@@ -29,14 +24,27 @@ const Timer: FC<any> = () => {
           setSeconds(59);
           setHours((state) => state - 1);
         } else {
-          studyContext?.handleSubmit();
+          (async () => {
+            setIsLoading(true);
+            await handleSubmitTest(hours * 3600 + minutes * 60 + seconds);
+            setIsLoading(false);
+          })();
         }
       }
     }
-  }, [hours, minutes, seconds, setHours, setMinutes, setSeconds, studyContext]);
+  }, [
+    seconds,
+    setSeconds,
+    minutes,
+    setMinutes,
+    hours,
+    setHours,
+    setIsLoading,
+    handleSubmitTest,
+  ]);
 
   useEffect(() => {
-    if (studyContext?.start) {
+    if (start) {
       timerRef.current = setInterval(() => {
         timeChange();
       }, 1000);
@@ -44,7 +52,7 @@ const Timer: FC<any> = () => {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [timeChange, studyContext?.start]);
+  }, [timeChange, start]);
 
   return (
     <Typography sx={{ color: "#26C048", fontWeight: "bold" }}>

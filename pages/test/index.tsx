@@ -22,7 +22,7 @@ const index: NextPage<Props> = () => {
           variant="h3"
           sx={{ fontWeight: "bold", marginBottom: 2, textAlign: "center" }}
         >
-          Start your TOEIC Online Test Now!
+          Bắt đầu bài thi TOEIC Online Ngay Bây Giờ!
         </Typography>
         <Box sx={{ display: "flex", gap: 2, color: "white" }}>
           <Box
@@ -34,11 +34,11 @@ const index: NextPage<Props> = () => {
             <Image src={mini} alt="mini_test_img" />
             <div style={{ position: "absolute", top: 20, left: 20 }}>
               <Typography variant="h5" fontWeight="bolder">
-                MINI TEST
+                BÀI THI NHỎ
               </Typography>
               <Typography sx={{ maxWidth: 300 }}>
-                Taking mini test with the number of questions and time limit
-                reduced by half
+                Làm bài kiểm tra với số lượng câu hỏi và thời gian bằng một nửa
+                bài kiểm tra thực tế
               </Typography>
             </div>
             <Button
@@ -46,7 +46,7 @@ const index: NextPage<Props> = () => {
               href="/test/mini-test"
               sx={{ position: "absolute", right: 20, bottom: 20 }}
             >
-              Start
+              Bắt đầu
             </Button>
           </Box>
           <Box
@@ -58,11 +58,11 @@ const index: NextPage<Props> = () => {
             <Image src={full} alt="full_test_img" />
             <div style={{ position: "absolute", top: 20, left: 20 }}>
               <Typography variant="h5" fontWeight="bolder">
-                FULL TEST
+                BÀI THI ĐẦY ĐỦ
               </Typography>
               <Typography sx={{ maxWidth: 300 }}>
-                Taking full test with the same number of questions and time
-                limit as the actual test
+                Làm đầy đủ bài thi với cùng số lượng câu hỏi và thời gian so với
+                thực tế
               </Typography>
             </div>
             <Button

@@ -28,9 +28,9 @@ export default async function handler(
           },
         },
       });
-      return res.status(200).json("Created successfully");
+      return res.status(200).json("Tạo thành công");
     }
   } catch (error) {
-    return res.status(500).json("Internal server error");
+    return res.status(500).json("Lỗi hệ thống");
   }
 }

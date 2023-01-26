@@ -6,39 +6,43 @@ import {
   Radio,
 } from "@mui/material";
 import { Question } from "@prisma/client";
-import { FC } from "react";
+import { FC, useState } from "react";
 interface Props {
   item: Question;
   answeredList: any;
   setAnsweredList: any;
 }
 
-const DisplayedQuestionOptionGroup: FC<Props & { type?: string }> = ({
+const DisplayedQuestionOptionGroup: FC<Props> = ({
   item,
   answeredList,
   setAnsweredList,
-  type,
 }) => {
+  const [value, setValue] = useState(answeredList.get(item.STT));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value);
+  };
   return (
-    <FormControl key={item?.STT} sx={{ display: "block" }}>
-      {item?.group && (
+    <FormControl key={item.STT} sx={{ display: "block" }}>
+      {item.group && (
         <FormLabel sx={{ fontWeight: "bold", color: "black", fontSize: 16 }}>
           {item.STT}.{item.question}
         </FormLabel>
       )}
       {item?.question && (
         <FormLabel sx={{ fontWeight: "bold", color: "black", fontSize: 16 }}>
-          {item?.question}
+          {item.question}
         </FormLabel>
       )}
 
       <RadioGroup
-        value={answeredList.get(item?.STT) || null}
-        onChange={(e) =>
+        value={value}
+        onChange={(e) => {
+          handleChange(e);
           setAnsweredList(
-            (prev: any) => new Map([...prev, [item?.STT, e.target.value]])
-          )
-        }
+            (prev: any) => new Map([...prev, [item.STT, e.target.value]])
+          );
+        }}
       >
         {["A", "B", "C"].map((option: string, index) => (
           <FormControlLabel
