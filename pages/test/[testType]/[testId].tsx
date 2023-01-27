@@ -6,7 +6,6 @@ import Leaderboard from "../../../components/test/left/Leaderboard";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
-
 import { TimerContextProvider } from "../../../components/context/TimerContext";
 import loading from "../../../asset/loading.svg";
 import Image from "next/image";
@@ -16,10 +15,9 @@ import {
   TestContextProvider,
 } from "../../../components/context/TestContext";
 import { useContext } from "react";
-import TestDisplayRight from "../../../components/test/right/TestDisplayRight";
 
-const DisplayedQuestion = dynamic(
-  import("../../../components/test/right/question/DisplayedQuestion")
+const TestDisplayRight = dynamic(
+  import("../../../components/test/right/TestDisplayRight")
 );
 
 const Test: NextPage = () => {
@@ -68,7 +66,7 @@ const Test: NextPage = () => {
                   >
                     <Typography>{data?.data?.name}</Typography>
                   </Box>
-                  <QuestionPalette type="test" isSubmitted={isSubmitted} />
+                  <QuestionPalette type="test" />
                 </Box>
               )}
               <Leaderboard ranking={data?.data?.raking || []} />

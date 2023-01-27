@@ -9,14 +9,17 @@ import TestProgress from "../LinearProgress";
 import { TimerContext } from "../../context/TimerContext";
 import { TestContext } from "../../context/TestContext";
 
-const QuestionPalette: FC<{ type: string; isSubmitted: boolean }> = ({
-  type,
-  isSubmitted,
-}) => {
+const QuestionPalette: FC<{ type: string }> = ({ type }) => {
   const [page, setPage] = useState(0);
   const { setIsLoading } = useContext(GlobalContext);
-  const { setAnsweredList, handleSubmitTest, questions, answeredList, start } =
-    useContext(TestContext);
+  const {
+    setAnsweredList,
+    handleSubmitTest,
+    questions,
+    answeredList,
+    start,
+    isSubmitted,
+  } = useContext(TestContext);
   const restart = () => {
     setAnsweredList(new Map());
   };
