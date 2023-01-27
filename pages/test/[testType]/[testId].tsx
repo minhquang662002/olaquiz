@@ -1,116 +1,95 @@
-import { NextPage, GetServerSideProps } from "next";
-import { prisma } from "../../../utils/db";
+import { NextPage } from "next";
 import Head from "next/head";
-import type { Answer, Question, Result, User } from "@prisma/client";
-import { Container, Typography } from "@mui/material";
-import TestDisplayRight from "../../../components/test/right/TestDisplayRight";
-import { authOptions } from "../../api/auth/[...nextauth]";
-import { unstable_getServerSession } from "next-auth";
-import { TestContextProvider } from "../../../components/context/TestContext";
-import { TimerContextProvider } from "../../../components/context/TimerContext";
+import { Box, Container, Typography } from "@mui/material";
 import QuestionPalette from "../../../components/test/left/QuestionPalette";
 import Leaderboard from "../../../components/test/left/Leaderboard";
-import { getSession } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useQuery } from "react-query";
 
-interface Props {
-  questions: Question[];
-  result: Result & { answer: Answer[] };
-  ranking: (Result & User)[];
-  testName: string;
-}
+import { TimerContextProvider } from "../../../components/context/TimerContext";
+import loading from "../../../asset/loading.svg";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+import {
+  TestContext,
+  TestContextProvider,
+} from "../../../components/context/TestContext";
+import { useContext } from "react";
+import TestDisplayRight from "../../../components/test/right/TestDisplayRight";
 
-const Test: NextPage<Props> = ({ questions, result, ranking, testName }) => {
+const DisplayedQuestion = dynamic(
+  import("../../../components/test/right/question/DisplayedQuestion")
+);
+
+const Test: NextPage = () => {
+  const router = useRouter();
+  const { data, isFetching } = useQuery({
+    queryKey: ["testData", router.query.testId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/test/${router.query.testId}`);
+      return res;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const { isSubmitted } = useContext(TestContext);
   return (
     <>
       <Head>
         <title>Bài thi</title>
       </Head>
-      <TestContextProvider result={result} questions={questions}>
-        <TimerContextProvider result={result}>
+
+      <TestContextProvider
+        questions={data?.data?.questions}
+        result={data?.data?.result}
+      >
+        <TimerContextProvider result={data?.data?.result}>
           <Container maxWidth="lg" sx={{ display: "flex", gap: 2, marginY: 2 }}>
             <div>
-              <Typography>{testName}</Typography>
-              <QuestionPalette type="test" />
-              <Leaderboard ranking={ranking} />
+              {isFetching ? (
+                <Box
+                  style={{
+                    background: "white",
+                    borderRadius: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  <Image src={loading} alt="loading" />
+                </Box>
+              ) : (
+                <Box>
+                  <Box
+                    sx={{
+                      background: "white",
+                      display: "inline-block",
+                      padding: 1,
+                    }}
+                  >
+                    <Typography>{data?.data?.name}</Typography>
+                  </Box>
+                  <QuestionPalette type="test" isSubmitted={isSubmitted} />
+                </Box>
+              )}
+              <Leaderboard ranking={data?.data?.raking || []} />
             </div>
-            <TestDisplayRight />
+
+            <Box sx={{ flexGrow: 1 }}>
+              {isFetching ? (
+                <Box
+                  sx={{ flexGrow: 1, background: "white", textAlign: "center" }}
+                >
+                  <Image src={loading} alt="loading" />
+                </Box>
+              ) : (
+                <TestDisplayRight isSubmitted={isSubmitted} />
+              )}
+            </Box>
           </Container>
-        </TimerContextProvider>{" "}
+        </TimerContextProvider>
       </TestContextProvider>
     </>
   );
 };
 
 export default Test;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const auth = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
-
-  if (!auth) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/?error=auth-to-test",
-      },
-    };
-  }
-  const testId = ctx.params?.testId as string;
-
-  const questions = await prisma.question.findMany({
-    where: {
-      testId,
-    },
-    orderBy: {
-      STT: "asc",
-    },
-  });
-
-  if (!questions.length) {
-    return {
-      redirect: {
-        destination: "/404",
-        permanent: false,
-      },
-    };
-  }
-
-  const testName = await prisma.test.findFirst({
-    where: {
-      id: testId,
-    },
-    select: {
-      name: true,
-    },
-  });
-
-  const result = await prisma.result.findFirst({
-    where: {
-      testId,
-      userId: auth.user.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      answer: true,
-    },
-  });
-
-  const ranking =
-    await prisma.$queryRaw`select max("Result"."score") as score, "User"."avatar", "User"."firstName",
-    "User"."lastName" from "Result"
-   inner join "User" on "User".id = "Result"."userId"
-   inner join "Test" on "Test".id = "Result"."testId"
-   group by  "User"."avatar", "User"."firstName",
-    "User"."lastName", "Result"."testId"
-   having "Result"."testId" = ${testId} order by score desc limit 10`;
-
-  return {
-    props: {
-      testName: testName?.name,
-      questions,
-      result: JSON.parse(JSON.stringify(result)),
-      ranking,
-    },
-  };
-};

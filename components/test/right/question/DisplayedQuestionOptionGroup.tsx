@@ -18,13 +18,10 @@ const DisplayedQuestionOptionGroup: FC<Props> = ({
   answeredList,
   setAnsweredList,
 }) => {
-  const [value, setValue] = useState(answeredList.get(item.STT));
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
+  const [value, setValue] = useState(answeredList.get(item.STT) || "");
   return (
     <FormControl key={item.STT} sx={{ display: "block" }}>
-      {item.group && (
+      {item?.group && (
         <FormLabel sx={{ fontWeight: "bold", color: "black", fontSize: 16 }}>
           {item.STT}.{item.question}
         </FormLabel>
@@ -38,7 +35,7 @@ const DisplayedQuestionOptionGroup: FC<Props> = ({
       <RadioGroup
         value={value}
         onChange={(e) => {
-          handleChange(e);
+          setValue(e.target.value);
           setAnsweredList(
             (prev: any) => new Map([...prev, [item.STT, e.target.value]])
           );

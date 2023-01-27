@@ -213,7 +213,6 @@ export const handleCreateExercise = async (
 
 export const submitTest = async (
   score: number,
-  userId: string,
   testId: string,
   answeredList: Map<number, string>,
   time: number
@@ -225,7 +224,6 @@ export const submitTest = async (
     }));
     await axios.post("/api/result", {
       score,
-      userId,
       testId,
       answeredArr,
       time,

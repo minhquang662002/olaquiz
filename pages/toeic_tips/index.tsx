@@ -20,6 +20,7 @@ const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
       <Head>
         <title>Mẹo thi TOEIC</title>
       </Head>
+
       <IntroTitle content="Mẹo thi TOEIC" />
       <Container maxWidth="lg" sx={{ marginTop: 5 }}>
         <Grid container spacing={2}>

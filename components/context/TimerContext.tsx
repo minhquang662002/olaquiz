@@ -1,4 +1,4 @@
-import { FC, useState, createContext } from "react";
+import { FC, useState, createContext, useEffect } from "react";
 
 interface ITimerState {
   hours: number;
@@ -10,7 +10,6 @@ interface ITimerState {
 }
 
 import { useRouter } from "next/router";
-import { number } from "yup/lib/locale";
 import { Result } from "@prisma/client";
 
 const TimerContext = createContext<ITimerState>({
@@ -27,19 +26,42 @@ const TimerContextProvider: FC<{
   result: Result;
 }> = ({ children, result }) => {
   const router = useRouter();
-  const [hours, setHours] = useState(
-    result
-      ? Math.floor(result.remainTime / 3600)
-      : router.query.testType == "mini-test"
-      ? 1
-      : 2
-  );
-  const [minutes, setMinutes] = useState(
-    result ? Math.floor((result.remainTime - hours * 3600) / 60) : 0
-  );
-  const [seconds, setSeconds] = useState(
-    result ? Math.floor(result.remainTime - hours * 3600 - minutes * 60) : 0
-  );
+
+  const [hours, setHours] = useState(1);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    if (router.query.testType == "mini-test") {
+      setHours(1);
+    } else {
+      setHours(2);
+    }
+  }, [router.query.testType, setHours]);
+
+  useEffect(() => {
+    if (result) {
+      setHours(Math.floor(result.remainTime / 3600));
+      setMinutes(
+        Math.floor(
+          (result.remainTime - Math.floor(result.remainTime / 3600) * 3600) / 60
+        )
+      );
+      setSeconds(
+        Math.floor(
+          result.remainTime -
+            Math.floor(result.remainTime / 3600) * 3600 -
+            Math.floor(
+              (result.remainTime -
+                Math.floor(result.remainTime / 3600) * 3600) /
+                60
+            ) *
+              60
+        )
+      );
+    }
+  }, [result, setHours, setMinutes, setSeconds]);
+
   return (
     <TimerContext.Provider
       value={{

@@ -26,7 +26,11 @@ const Home: NextPage = () => {
       <Box sx={{ position: "relative", height: 500, width: "100%" }}>
         <Image
           fill
-          style={{ objectFit: "cover", objectPosition: "center" }}
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+            filter: "brightness(0.6)",
+          }}
           src={banner}
           alt="banner"
         />
@@ -56,15 +60,21 @@ const Home: NextPage = () => {
           variant="h4"
           fontWeight="bolder"
           textAlign="center"
+          color="#34447C"
           sx={{ marginTop: 2 }}
         >
           Bắt đầu luyện tập TOEIC ngay bây giờ
         </Typography>
-        <Typography textAlign="center">
+        <Typography textAlign="center" color="#8293D0">
           Muốn đặt được số điểm TOEIC bạn mong ước? Hãy thử ngay một vài bài
           luyện tập và thi thử trên trang web này để sẵn sàng 100% cho bài thi
           TOEIC tới!
         </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight="bolder" color="#34447C">
+            TOEIC Exam Simulator
+          </Typography>
+        </Box>
       </Container>
     </>
   );

@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Navbar from "../navbar/Navbar";
+import Footer from "../layout/Footer";
 
 interface Props {
   children: React.ReactNode;
@@ -31,16 +32,28 @@ const Protected: React.FC<Props> = ({ children }) => {
           setIsAllowed(true);
         }
       }
+
+      if (router.pathname.startsWith("/test")) {
+        if (session.status == "unauthenticated") {
+          router.replace("/?error=auth-to-login");
+        }
+      }
     }
   }, [router, session]);
 
-  return isAllowed ? (
-    <>
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       {!router.pathname.startsWith("/admin") && <Navbar />}
       {children}
-    </>
-  ) : (
-    <div></div>
+
+      {!new RegExp(/test\/.*\/.*/).test(router.pathname) && <Footer />}
+    </div>
   );
 };
 

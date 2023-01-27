@@ -1,11 +1,10 @@
-import { FC, Fragment, useContext } from "react";
+import { FC, Fragment, memo } from "react";
 import { Question } from "@prisma/client";
-import TestResultQuestion from "./TestResultQuestion";
+import dynamic from "next/dynamic";
 import { Paper, Typography } from "@mui/material";
-import { TestContext } from "../../../context/TestContext";
+import TestResultQuestion from "./TestResultQuestion";
 
-const TestResultAnswer: FC = () => {
-  const { questions, answeredList } = useContext(TestContext);
+const TestResultAnswer: FC<any> = ({ questions, answeredList }) => {
   return (
     <Paper
       sx={{
@@ -51,4 +50,4 @@ const TestResultAnswer: FC = () => {
   );
 };
 
-export default TestResultAnswer;
+export default memo(TestResultAnswer);

@@ -1,5 +1,4 @@
 import { Answer, Question } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import {
   useState,
   createContext,
@@ -59,8 +58,6 @@ const TestContextProvider: FC<{
   const [isSubmitted, setIsSubmitted] = useState(!!result);
   const [score, setScore] = useState(result?.score);
   const [start, setStart] = useState(false);
-
-  const session = useSession();
   const router = useRouter();
 
   const RESULT = useMemo(
@@ -77,7 +74,6 @@ const TestContextProvider: FC<{
       setStart(false);
       await submitTest(
         RESULT,
-        session.data?.user.id as string,
         router.query.testId as string,
         answeredList,
         time
@@ -86,7 +82,7 @@ const TestContextProvider: FC<{
       setScore(RESULT);
       setIsSubmitted(true);
     },
-    [RESULT, answeredList, router.query.testId, session.data?.user.id]
+    [RESULT, answeredList, router.query.testId]
   );
 
   return (

@@ -1,21 +1,20 @@
-import { FC, useContext, useMemo } from "react";
+import { FC, useMemo } from "react";
 import DisplayedQuestionButtonGroup from "./DisplayedQuestionButtonGroup";
 import DisplayedQuestionContent from "./DisplayedQuestionContent";
 import { Box } from "@mui/material";
-import { TestContext } from "../../../context/TestContext";
 import { Question } from "@prisma/client";
 
-const DisplayedQuestion: FC<any> = ({ type }) => {
-  const {
-    questions,
-    displayedNumber,
-    start,
-    setStart,
-    answeredList,
-    setAnsweredList,
-    isSubmitted,
-    setDisplayedNumber,
-  } = useContext(TestContext);
+const DisplayedQuestion: FC<any> = ({
+  type,
+  start,
+  setStart,
+  displayedNumber,
+  setDisplayedNumber,
+  answeredList,
+  setAnsweredList,
+  isSubmitted,
+  questions,
+}) => {
   const selectedQuestion = useMemo(() => {
     return questions[displayedNumber]?.group
       ? questions.filter((cur: Question) => {
@@ -53,18 +52,18 @@ const DisplayedQuestion: FC<any> = ({ type }) => {
       </Box>
       {type != "exercise" && (
         <DisplayedQuestionContent
-          start={start!}
-          setStart={setStart!}
-          question={selectedQuestion!}
-          setAnsweredList={setAnsweredList!}
-          answeredList={answeredList!}
+          start={start}
+          setStart={setStart}
+          question={selectedQuestion}
+          setAnsweredList={setAnsweredList}
+          answeredList={answeredList}
           type={type}
         />
       )}
 
       {!isSubmitted && (
         <DisplayedQuestionButtonGroup
-          start={start!}
+          start={start}
           displayedNumber={displayedNumber!}
           questions={questions!}
           setDisplayedNumber={setDisplayedNumber}

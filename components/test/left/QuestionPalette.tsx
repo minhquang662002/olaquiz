@@ -1,28 +1,22 @@
 import { FC, useState, useContext, memo } from "react";
 import { Question } from "@prisma/client";
-import { Box, Typography, Paper, Button } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { ChevronLeft, ChevronRight, RestartAlt } from "@mui/icons-material";
-import TestProgress from "../LinearProgress";
 import { GlobalContext } from "../../context/GlobalContext";
 import QuestionPaletteButton from "./QuestionPaletteButton";
-import { TestContext } from "../../context/TestContext";
 import PracticeResult from "../../exercise/PracticeResult";
+import TestProgress from "../LinearProgress";
 import { TimerContext } from "../../context/TimerContext";
+import { TestContext } from "../../context/TestContext";
 
-const QuestionPalette: FC<{ type: string }> = ({ type }) => {
+const QuestionPalette: FC<{ type: string; isSubmitted: boolean }> = ({
+  type,
+  isSubmitted,
+}) => {
   const [page, setPage] = useState(0);
   const { setIsLoading } = useContext(GlobalContext);
-  const {
-    questions,
-    setAnsweredList,
-    isSubmitted,
-    answeredList,
-    displayedNumber,
-    setDisplayedNumber,
-    start,
-    handleSubmitTest,
-  } = useContext(TestContext);
-
+  const { setAnsweredList, handleSubmitTest, questions, answeredList, start } =
+    useContext(TestContext);
   const restart = () => {
     setAnsweredList(new Map());
   };
@@ -30,17 +24,16 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
 
   const submit = async () => {
     setIsLoading(true);
-
     await handleSubmitTest(hours * 3600 + minutes * 60 + seconds);
     setIsLoading(false);
   };
 
   return (
-    <Paper
-      sx={{
-        padding: 2,
-        borderRadius: 2,
-        alignSelf: "flex-start",
+    <Box
+      style={{
+        background: "white",
+        padding: "10px",
+        borderRadius: "10px",
       }}
     >
       <Box
@@ -61,7 +54,6 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
               boxShadow: "0 2px 6px rgb(0 0 0 / 10%)",
               width: 20,
               height: 20,
-              textAlign: "center",
               cursor: "pointer",
             }}
             onClick={() => {
@@ -77,7 +69,6 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
               boxShadow: "0 2px 6px rgb(0 0 0 / 10%)",
               width: 20,
               height: 20,
-              textAlign: "center",
               cursor: "pointer",
             }}
             onClick={() => {
@@ -101,21 +92,17 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
             key={item.id}
             isSubmitted={isSubmitted}
             answeredList={answeredList}
-            displayedNumber={displayedNumber}
             item={item}
-            questions={questions}
-            setDisplayedNumber={setDisplayedNumber}
             type={type}
+            questions={questions}
           />
         ))}
       </Box>
+
       <br />
+      <TestProgress value={answeredList.size} total={questions.length} />
       {type == "test" ? (
         <>
-          <TestProgress
-            value={answeredList.size || 0}
-            total={questions.length || 0}
-          />
           {start && !isSubmitted && (
             <Button
               sx={{
@@ -170,7 +157,7 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
           </Button>
         </>
       )}
-    </Paper>
+    </Box>
   );
 };
 

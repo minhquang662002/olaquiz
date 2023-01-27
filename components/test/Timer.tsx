@@ -1,13 +1,12 @@
 import { FC, useEffect, useRef, useCallback, useContext, memo } from "react";
 import { Typography } from "@mui/material";
-import { TestContext } from "../context/TestContext";
 import { GlobalContext } from "../context/GlobalContext";
 import { TimerContext } from "../context/TimerContext";
+import { TestContext } from "../context/TestContext";
 
 const Timer: FC = () => {
-  const { handleSubmitTest, start } = useContext(TestContext);
   const { setIsLoading } = useContext(GlobalContext);
-
+  const { start, handleSubmitTest } = useContext(TestContext);
   const { hours, minutes, seconds, setHours, setMinutes, setSeconds } =
     useContext(TimerContext);
   const timerRef = useRef<any>();
@@ -23,25 +22,20 @@ const Timer: FC = () => {
           setMinutes(59);
           setSeconds(59);
           setHours((state) => state - 1);
-        } else {
-          (async () => {
-            setIsLoading(true);
-            await handleSubmitTest(hours * 3600 + minutes * 60 + seconds);
-            setIsLoading(false);
-          })();
         }
       }
     }
-  }, [
-    seconds,
-    setSeconds,
-    minutes,
-    setMinutes,
-    hours,
-    setHours,
-    setIsLoading,
-    handleSubmitTest,
-  ]);
+  }, [seconds, setSeconds, minutes, setMinutes, hours, setHours]);
+
+  useEffect(() => {
+    if (hours == 0 && minutes == 0 && seconds == 0) {
+      (async () => {
+        setIsLoading(true);
+        await handleSubmitTest(hours * 3600 + minutes * 60 + seconds);
+        setIsLoading(false);
+      })();
+    }
+  }, [handleSubmitTest, hours, minutes, seconds, setIsLoading]);
 
   useEffect(() => {
     if (start) {
