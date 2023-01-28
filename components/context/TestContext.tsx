@@ -56,6 +56,7 @@ const TestContextProvider: FC<{
         )
   );
   const [isSubmitted, setIsSubmitted] = useState(!!result);
+
   const [score, setScore] = useState(result?.score);
   const [start, setStart] = useState(false);
   const router = useRouter();

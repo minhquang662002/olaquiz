@@ -80,7 +80,7 @@ const Test: NextPage = () => {
                   <Image src={loading} alt="loading" />
                 </Box>
               ) : (
-                <TestDisplayRight isSubmitted={isSubmitted} />
+                <TestDisplayRight />
               )}
             </Box>
           </Container>

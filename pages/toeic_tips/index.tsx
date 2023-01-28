@@ -29,7 +29,6 @@ const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
               <Card
                 sx={{
                   width: 276,
-
                   display: "flex",
                   flexDirection: "column",
                 }}
