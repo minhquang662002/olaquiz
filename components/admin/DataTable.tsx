@@ -96,7 +96,8 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen }) => {
                     if (
                       page == "vocabulary" ||
                       page == "practice" ||
-                      page == "test"
+                      page == "test" ||
+                      page == "post"
                     ) {
                       mutation.mutate(datum.id);
                     }

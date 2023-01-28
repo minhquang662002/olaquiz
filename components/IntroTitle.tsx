@@ -8,12 +8,21 @@ const IntroTitle: FC<{ content: string }> = ({ content }) => {
         style={{
           position: "absolute",
           color: "white",
-          top: "35%",
+          top: "25%",
           left: "50%",
           transform: "translateX(-50%)",
         }}
       >
-        <Typography variant="h4" fontWeight="bolder" textAlign="center">
+        <Typography
+          sx={{
+            fontSize: {
+              md: 35,
+              xs: 20,
+            },
+            fontWeight: "bolder",
+            textAlign: "center",
+          }}
+        >
           {content}
         </Typography>
       </div>

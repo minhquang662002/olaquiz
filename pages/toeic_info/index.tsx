@@ -15,21 +15,19 @@ import Link from "next/link";
 import IntroTitle from "../../components/IntroTitle";
 import { Post } from "@prisma/client";
 
-const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
+const ToeicInfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
   return (
     <>
       <Head>
         <title>Giới thiệu về TOEIC</title>
       </Head>
       <IntroTitle content="Giới thiệu về TOEIC" />
-      <Container maxWidth="lg" sx={{ marginTop: 8, paddingBottom: 4 }}>
+      <Container maxWidth="lg" sx={{ marginTop: 8, paddingBottom: 10 }}>
         <Grid container spacing={2}>
           {posts.map((item) => (
-            <Grid item key={item.id}>
+            <Grid md={3} item key={item.id}>
               <Card
                 sx={{
-                  width: 276,
-                  height: 500,
                   display: "flex",
                   flexDirection: "column",
                 }}
@@ -83,7 +81,7 @@ const toeicinfo: NextPage<{ posts: Post[] }> = ({ posts }) => {
   );
 };
 
-export default toeicinfo;
+export default ToeicInfo;
 
 export const getStaticProps: GetStaticProps = async () => {
   const posts = await prisma.post.findMany({

@@ -30,8 +30,9 @@ const VocabularyPage: NextPage<Props> = ({ topics }) => {
             <Grid
               item
               key={item.id}
-              xs={3}
+              md={3}
               sx={{
+                flexGrow: 1,
                 cursor: "pointer",
                 transition: "0.2s",
                 "&:hover": {
@@ -45,7 +46,7 @@ const VocabularyPage: NextPage<Props> = ({ topics }) => {
                 )
               }
             >
-              <Card sx={{ height: 250 }}>
+              <Card>
                 <CardMedia
                   component="img"
                   sx={{ height: 200 }}
@@ -58,7 +59,6 @@ const VocabularyPage: NextPage<Props> = ({ topics }) => {
                     fontWeight="bold"
                     sx={{
                       transition: "0.3s",
-
                       "&:hover": {
                         color: "#1976D2",
                       },

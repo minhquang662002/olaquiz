@@ -21,14 +21,12 @@ const GrammarPage: NextPage<{ posts: Post[] }> = ({ posts }) => {
         <title>Ngữ pháp - olaQuiz</title>
       </Head>
       <IntroTitle content="Ngữ pháp" />
-      <Container maxWidth="lg" sx={{ marginTop: 5 }}>
+      <Container maxWidth="lg" sx={{ marginTop: 5, paddingBottom: 10 }}>
         <Grid container spacing={2}>
           {posts.map((item) => (
-            <Grid item key={item.id}>
+            <Grid md={3} item key={item.id}>
               <Card
                 sx={{
-                  width: 276,
-                  height: 500,
                   display: "flex",
                   flexDirection: "column",
                 }}

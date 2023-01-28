@@ -36,7 +36,7 @@ const NavCenter: FC = () => {
   );
 
   return (
-    <Box sx={{ display: { xs: "none", lg: "flex" }, gap: 2, margin: "0 auto" }}>
+    <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2, margin: "0 auto" }}>
       {PAGES.map((item) => (
         <Button
           href={item.url}

@@ -6,6 +6,7 @@ import { Post } from "@prisma/client";
 import IntroTitle from "../../components/IntroTitle";
 import { Divider, Typography } from "@mui/material";
 import Link from "next/link";
+import { Fragment } from "react";
 interface Props {
   post: Post;
   relatedPosts: Post[];
@@ -21,18 +22,27 @@ const PostPage: NextPage<Props> = ({ post, relatedPosts }) => {
 
       <Container
         maxWidth="lg"
-        sx={{ display: "flex", gap: 2, paddingBottom: 5 }}
+        sx={{
+          display: "flex",
+          flexDirection: {
+            md: "row",
+            xs: "column",
+          },
+          gap: 2,
+          paddingBottom: 5,
+        }}
       >
         <div
+          dangerouslySetInnerHTML={{
+            __html: post.content,
+          }}
           style={{
             background: "white",
             padding: "30px",
             borderRadius: "10px",
             flexBasis: "40%",
             flexGrow: 1,
-          }}
-          dangerouslySetInnerHTML={{
-            __html: post.content,
+            overflowX: "hidden",
           }}
         />
         <Box
@@ -48,7 +58,7 @@ const PostPage: NextPage<Props> = ({ post, relatedPosts }) => {
             Bài viết liên quan
           </Typography>
           {relatedPosts?.map((item) => (
-            <>
+            <Fragment key={item.id}>
               <Link href={`/toeic_info/post?id=${item.id}`}>
                 <Typography
                   variant="body2"
@@ -59,13 +69,12 @@ const PostPage: NextPage<Props> = ({ post, relatedPosts }) => {
                       textDecoration: "underline",
                     },
                   }}
-                  key={item.id}
                 >
                   {item.title}
                 </Typography>
               </Link>
               <Divider sx={{ marginY: 1 }} />
-            </>
+            </Fragment>
           ))}
         </Box>
       </Container>

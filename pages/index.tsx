@@ -38,7 +38,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Olaquiz - English for the better</title>
+        <title>olaQuiz - English For The Better</title>
         <meta name="description" content="toeic" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -53,6 +53,8 @@ const Home: NextPage = () => {
         }}
       >
         <Image
+          sizes="100%"
+          priority
           fill
           style={{
             objectFit: "cover",
@@ -135,6 +137,7 @@ const Home: NextPage = () => {
                 alt="mini_test_img"
                 fill={true}
                 style={imageStyle}
+                sizes="100%"
               />
               <div style={{ position: "absolute", top: 20, left: 20 }}>
                 <Typography variant="h5" fontWeight="bolder">
@@ -169,6 +172,7 @@ const Home: NextPage = () => {
                 alt="full_test_img"
                 fill={true}
                 style={imageStyle}
+                sizes="100%"
               />
               <div style={{ position: "absolute", top: 20, left: 20 }}>
                 <Typography variant="h5" fontWeight="bolder">
@@ -217,6 +221,7 @@ const Home: NextPage = () => {
               alt="vocab_img_practice"
               fill={true}
               style={imageStyle}
+              sizes="100%"
             />
             <Box
               sx={{
@@ -260,6 +265,7 @@ const Home: NextPage = () => {
               alt="grammar_practice_img"
               fill={true}
               style={imageStyle}
+              sizes="100%"
             />
             <Box
               sx={{
