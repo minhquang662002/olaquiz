@@ -98,6 +98,7 @@ const TestResultQuestion: FC<Props> = ({
                     "&:hover": {
                       background: "#ececec",
                     },
+                    margin: 0,
                     borderRadius: 2,
                     background:
                       answeredList.get(question.STT as number) == item

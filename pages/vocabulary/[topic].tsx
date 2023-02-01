@@ -1,8 +1,8 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import { prisma } from "../../utils/db";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { Container, Box, Divider, Typography } from "@mui/material";
+import { Container, Box, Divider } from "@mui/material";
 import Image from "next/image";
 const TopicPage: FC<any> = ({ vocabularies, topic }) => {
   return (
@@ -13,9 +13,8 @@ const TopicPage: FC<any> = ({ vocabularies, topic }) => {
       <Container maxWidth="lg">
         {vocabularies.map((item: any) => {
           return (
-            <>
+            <Fragment key={item.id}>
               <Box
-                key={item.id}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -23,10 +22,16 @@ const TopicPage: FC<any> = ({ vocabularies, topic }) => {
                   padding: 2,
                 }}
               >
-                <div
-                  style={{
-                    width: 200,
-                    height: 150,
+                <Box
+                  sx={{
+                    width: {
+                      md: 200,
+                      xs: 100,
+                    },
+                    height: {
+                      md: 150,
+                      xs: 75,
+                    },
                     position: "relative",
                     flexShrink: 0,
                   }}
@@ -34,22 +39,29 @@ const TopicPage: FC<any> = ({ vocabularies, topic }) => {
                   <Image
                     src={item.image}
                     alt="vocab_image"
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    style={{ objectFit: "cover" }}
+                    sizes="100%"
                   />
-                </div>
-                <div>
-                  <Typography variant="body1">
-                    <span style={{ color: "red" }}>{item.word}</span>{" "}
-                    <span style={{ color: "blue" }}>{item.spelling}</span>
-                  </Typography>
-                  <Typography>{item.definition}</Typography>
-                  <Typography>{item.example}</Typography>
-                  <audio src={item.audio} controls></audio>
-                </div>
+                </Box>
+                <Box
+                  sx={{
+                    fontSize: {
+                      md: 15,
+                      xs: 10,
+                    },
+                  }}
+                >
+                  <span style={{ color: "red" }}>{item.word}</span>
+                  <span style={{ color: "blue" }}>{item.spelling}</span>
+
+                  <p>{item.definition}</p>
+                  <p>{item.example}</p>
+                  <audio className="vocab_audio" src={item.audio} controls />
+                </Box>
               </Box>
               <Divider />
-            </>
+            </Fragment>
           );
         })}
       </Container>

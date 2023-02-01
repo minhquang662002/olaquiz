@@ -42,23 +42,8 @@ const TimerContextProvider: FC<{
   useEffect(() => {
     if (result) {
       setHours(Math.floor(result.remainTime / 3600));
-      setMinutes(
-        Math.floor(
-          (result.remainTime - Math.floor(result.remainTime / 3600) * 3600) / 60
-        )
-      );
-      setSeconds(
-        Math.floor(
-          result.remainTime -
-            Math.floor(result.remainTime / 3600) * 3600 -
-            Math.floor(
-              (result.remainTime -
-                Math.floor(result.remainTime / 3600) * 3600) /
-                60
-            ) *
-              60
-        )
-      );
+      setMinutes(Math.floor((result.remainTime % 3600) / 60));
+      setSeconds(result.remainTime % 60);
     }
   }, [result, setHours, setMinutes, setSeconds]);
 

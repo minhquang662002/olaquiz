@@ -6,7 +6,7 @@ import { TestContext } from "../context/TestContext";
 
 const Timer: FC = () => {
   const { setIsLoading } = useContext(GlobalContext);
-  const { start, handleSubmitTest } = useContext(TestContext);
+  const { start, handleSubmitTest, isSubmitted } = useContext(TestContext);
   const { hours, minutes, seconds, setHours, setMinutes, setSeconds } =
     useContext(TimerContext);
   const timerRef = useRef<any>();
@@ -38,7 +38,7 @@ const Timer: FC = () => {
   }, [handleSubmitTest, hours, minutes, seconds, setIsLoading]);
 
   useEffect(() => {
-    if (start) {
+    if (start && !isSubmitted) {
       timerRef.current = setInterval(() => {
         timeChange();
       }, 1000);
@@ -46,7 +46,7 @@ const Timer: FC = () => {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [timeChange, start]);
+  }, [timeChange, start, isSubmitted]);
 
   return (
     <Typography sx={{ color: "#26C048", fontWeight: "bold" }}>

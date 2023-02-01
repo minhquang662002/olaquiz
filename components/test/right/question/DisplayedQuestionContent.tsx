@@ -26,8 +26,16 @@ const DisplayedQuestionContent: FC<Props> = ({
   return (
     <>
       {!start && type != "exercise" ? (
-        <Box sx={{ textAlign: "center" }}>
-          <Image src={startImg} alt="start_img" width={500} height={400} />
+        <>
+          <Box
+            sx={{
+              textAlign: "center",
+              position: "relative",
+              height: { xs: 200, md: 400 },
+            }}
+          >
+            <Image src={startImg} alt="start_img" fill={true} sizes="100%" />
+          </Box>
           <Box
             sx={{
               width: 150,
@@ -45,7 +53,7 @@ const DisplayedQuestionContent: FC<Props> = ({
           >
             TAKE TEST
           </Box>
-        </Box>
+        </>
       ) : (
         <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           {question[0]?.paragraph && (
@@ -58,6 +66,7 @@ const DisplayedQuestionContent: FC<Props> = ({
                 alt="question_img"
                 width={300}
                 height={200}
+                sizes="100%"
               />
             </Box>
           )}

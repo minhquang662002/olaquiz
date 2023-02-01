@@ -39,10 +39,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     type: topicType
                 }
             })
-            return res.status(200).json("Created")
+            return res.status(200).json("Tạo thành công")
         }
     } catch (error) {
-        console.log(error)
-        return res.status(500).json(error)
+        return res.status(500).json("Lỗi hệ thống")
     }
 }

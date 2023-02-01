@@ -5,14 +5,21 @@ import { useRouter } from "next/router";
 import { Exercise, Question } from "@prisma/client";
 import QuestionPalette from "../../../../components/test/left/QuestionPalette";
 import { TestContextProvider } from "../../../../components/context/TestContext";
-import Link from "next/link";
 import DisplayContainer from "../../../../components/exercise/DisplayContainer";
 import { prisma } from "../../../../utils/db";
+import dynamic from "next/dynamic";
 
 interface Props {
   exercises: Exercise[];
   initExercise: Exercise & { questions: Question[] };
 }
+
+const SwipeableEdgeDrawer = dynamic(
+  import("../../../../components/test/SwipeableEdgeDrawer"),
+  {
+    ssr: false,
+  }
+);
 
 const ExercisePage: NextPage<Props> = ({ exercises, initExercise }) => {
   const router = useRouter();
@@ -23,45 +30,55 @@ const ExercisePage: NextPage<Props> = ({ exercises, initExercise }) => {
       </Head>
       <TestContextProvider questions={initExercise?.questions || []}>
         <Container maxWidth="lg" sx={{ display: "flex", gap: 2, marginY: 2 }}>
-          <Box sx={{ width: "28%" }}>
+          <Box
+            sx={{
+              width: "30%",
+              display: {
+                xs: "none",
+                md: "block",
+              },
+            }}
+          >
             <QuestionPalette type="exercise" />
-            <Grid sx={{ marginTop: 5 }} container gap={2}>
+            <Grid sx={{ marginTop: 5, flexGrow: 0 }} container gap={2}>
               {exercises?.map((item: Exercise) => (
-                <Link
+                <Grid
                   key={item.id}
-                  href={`/practice/${router.query.practiceType}/${router.query.practiceTopic}/${item.id}`}
-                  style={{ flexGrow: 1 }}
+                  md={3}
+                  sx={{
+                    flexGrow: 1,
+                    width: "100%",
+                    borderRadius: 2,
+                    background:
+                      router.query.exercise == item.id ? "white" : "#E4E6ED",
+                    whiteSpace: "nowrap",
+
+                    border:
+                      router.query.exercise == item.id
+                        ? "2px solid #007AFF"
+                        : "",
+                    cursor: "pointer",
+                    color:
+                      router.query.exercise == item.id ? "#007AFF" : "#B2B6C3",
+                    fontSize: 14,
+                    fontWeight: "bolder",
+                    textAlign: "center",
+                    padding: "3px",
+                  }}
+                  item
+                  onClick={() =>
+                    router.push(
+                      `/practice/${router.query.practiceType}/${router.query.practiceTopic}/${item.id}`
+                    )
+                  }
                 >
-                  <Grid
-                    sx={{
-                      borderRadius: 2,
-                      background:
-                        router.query.exercise == item.id ? "white" : "#E4E6ED",
-                      whiteSpace: "nowrap",
-                      border:
-                        router.query.exercise == item.id
-                          ? "2px solid #007AFF"
-                          : "",
-                      cursor: "pointer",
-                      color:
-                        router.query.exercise == item.id
-                          ? "#007AFF"
-                          : "#B2B6C3",
-                      fontSize: 14,
-                      fontWeight: "bolder",
-                      textAlign: "center",
-                      padding: "3px",
-                      flexGrow: 1,
-                    }}
-                    item
-                  >
-                    {item.name.split("-").join(" ")}
-                  </Grid>
-                </Link>
+                  {item.name.split("-").join(" ")}
+                </Grid>
               ))}
             </Grid>
           </Box>
           <DisplayContainer />
+          <SwipeableEdgeDrawer exercises={exercises} />
         </Container>
       </TestContextProvider>
     </>

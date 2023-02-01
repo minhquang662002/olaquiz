@@ -1,28 +1,30 @@
-import { FC, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import DisplayedQuestionButtonGroup from "./DisplayedQuestionButtonGroup";
 import DisplayedQuestionContent from "./DisplayedQuestionContent";
 import { Box } from "@mui/material";
 import { Question } from "@prisma/client";
+import { TestContext } from "../../../context/TestContext";
 
-const DisplayedQuestion: FC<any> = ({
-  type,
-  start,
-  setStart,
-  displayedNumber,
-  setDisplayedNumber,
-  answeredList,
-  setAnsweredList,
-  isSubmitted,
-  questions,
-}) => {
+const DisplayedQuestion: FC<any> = ({ type }) => {
+  const {
+    start,
+    setStart,
+    displayedNumber,
+    setDisplayedNumber,
+    answeredList,
+    setAnsweredList,
+    isSubmitted,
+    questions,
+  } = useContext(TestContext);
+
   const selectedQuestion = useMemo(() => {
-    return questions[displayedNumber]?.group
+    return questions?.[displayedNumber]?.group
       ? questions.filter((cur: Question) => {
           if (cur.group === questions[displayedNumber]?.group) {
             return cur;
           }
         })
-      : [questions[displayedNumber]];
+      : [questions?.[displayedNumber]];
   }, [displayedNumber, questions]);
 
   return (
@@ -30,13 +32,16 @@ const DisplayedQuestion: FC<any> = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        maxHeight: 600,
+
         background: "white",
         flexGrow: 1,
         boxShadow:
           "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
         borderRadius: 2,
-        paddingX: 5,
+        paddingX: {
+          xs: 2,
+          md: 4,
+        },
         paddingY: 3,
       }}
     >
@@ -50,16 +55,15 @@ const DisplayedQuestion: FC<any> = ({
           />
         )}
       </Box>
-      {type != "exercise" && (
-        <DisplayedQuestionContent
-          start={start}
-          setStart={setStart}
-          question={selectedQuestion}
-          setAnsweredList={setAnsweredList}
-          answeredList={answeredList}
-          type={type}
-        />
-      )}
+
+      <DisplayedQuestionContent
+        start={start}
+        setStart={setStart}
+        question={selectedQuestion}
+        setAnsweredList={setAnsweredList}
+        answeredList={answeredList}
+        type={type}
+      />
 
       {!isSubmitted && (
         <DisplayedQuestionButtonGroup

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export const register = async (formValue: RegisterProps) => {
   try {
     const res = await axios.post("/api/auth/register", formValue);
-    toast.success("Register successfully!");
+    toast.success("Đăng ký thành công!");
     signIn("credentials", {
       email: res.data.email,
       password: formValue.password,

@@ -5,15 +5,15 @@ import TestResultQuestion from "../test/right/result/TestResultQuestion";
 import { Box, Button } from "@mui/material";
 
 const DisplayContainer = () => {
-  const studyContext = useContext(TestContext);
+  const { answeredList, displayedNumber, questions, setDisplayedNumber } =
+    useContext(TestContext);
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {studyContext?.answeredList?.get(studyContext?.displayedNumber + 1) ? (
+      {answeredList.get(displayedNumber + 1) ? (
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            maxHeight: 600,
             background: "white",
             flexGrow: 1,
             boxShadow:
@@ -24,15 +24,13 @@ const DisplayContainer = () => {
           }}
         >
           <TestResultQuestion
-            answeredList={studyContext?.answeredList}
-            questions={studyContext?.questions}
-            question={studyContext?.questions[studyContext?.displayedNumber]}
+            answeredList={answeredList}
+            questions={questions}
+            question={questions[displayedNumber]}
           />
           <Button
             className="next__question-btn"
-            onClick={() =>
-              studyContext?.setDisplayedNumber((state) => state + 1)
-            }
+            onClick={() => setDisplayedNumber((state) => state + 1)}
           >
             Next
           </Button>

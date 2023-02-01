@@ -5,6 +5,8 @@ import Protected from "../components/auth/Protected";
 import { GlobalContextProvider } from "../components/context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider, createTheme } from "@mui/material";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   const theme = createTheme({
@@ -29,9 +31,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <GlobalContextProvider>
           <ThemeProvider theme={theme}>
-            <Protected>
-              <Component {...pageProps} />
-            </Protected>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <Protected>
+                <Component {...pageProps} />
+              </Protected>
+            </LocalizationProvider>
           </ThemeProvider>
         </GlobalContextProvider>
       </QueryClientProvider>

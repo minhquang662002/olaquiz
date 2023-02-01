@@ -12,17 +12,18 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  avatar    String   @default("https://gamek.mediacdn.vn/133514250583805952/2021/12/1/photo-1-1638349281733769557330.png")
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role     @relation(fields: [roleId], references: [id])
-  roleId    Int      @default(3)
-  results   Result[]
+  id          String    @id @default(uuid())
+  name        String
+  avatar      String    @default("https://gamek.mediacdn.vn/133514250583805952/2021/12/1/photo-1-1638349281733769557330.png")
+  email       String    @unique
+  password    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  role        Role      @relation(fields: [roleId], references: [id])
+  roleId      Int       @default(3)
+  results     Result[]
+  birthDay    DateTime?
+  phoneNumber String?
 }
 
 model Role {

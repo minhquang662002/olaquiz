@@ -9,14 +9,11 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
   Drawer,
 } from "@mui/material";
-import type { NextPage } from "next";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 import NavCenter from "./NavCenter";
-import NavLeft from "./NavLeft";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState, useMemo } from "react";
 import HomeIcon from "@mui/icons-material/Home";
@@ -26,7 +23,8 @@ import GTranslateIcon from "@mui/icons-material/GTranslate";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import BookIcon from "@mui/icons-material/Book";
-const Navbar: NextPage = () => {
+import NavRight from "./NavRight";
+const Navbar = () => {
   const router = useRouter();
   const [isShowing, setIsShowing] = useState(false);
 
@@ -100,7 +98,7 @@ const Navbar: NextPage = () => {
               onClick={() => setIsShowing((state) => !state)}
             />
             {!router.pathname.startsWith("/admin") && <NavCenter />}
-            <NavLeft />
+            <NavRight />
           </Toolbar>
         </Container>
       </AppBar>

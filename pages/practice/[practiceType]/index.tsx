@@ -33,40 +33,40 @@ const PracticeTypePage: NextPage<Props> = ({ topics }) => {
       >
         <Grid container>
           {topics?.map((item) => (
-            <Link
+            <Grid
+              item
               key={item.id}
-              href={`/practice/${item.type}/${item.name
-                .toLowerCase()
-                .split(" ")
-                .join("-")}`}
-              style={{ flexGrow: 1 }}
+              md={3}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                cursor: "pointer",
+                "&:hover": {
+                  color: "#725CF5",
+                },
+              }}
+              onClick={() =>
+                router.push(
+                  `/practice/${item.type}/${item.name
+                    .toLowerCase()
+                    .split(" ")
+                    .join("-")}`
+                )
+              }
             >
-              <Grid
-                item
-                lg={6}
+              <LocalLibraryIcon />
+              <Typography
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  cursor: "pointer",
-                  "&:hover": {
-                    color: "#725CF5",
-                  },
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                  fontSize: 12,
+                  whiteSpace: "nowrap",
                 }}
               >
-                <LocalLibraryIcon />
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    textTransform: "uppercase",
-                    fontSize: 12,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {item.name}
-                </Typography>
-              </Grid>
-            </Link>
+                {item.name}
+              </Typography>
+            </Grid>
           ))}
         </Grid>
       </Container>

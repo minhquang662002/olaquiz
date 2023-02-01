@@ -13,13 +13,10 @@ const TestDisplayRight: FC = () => {
     questions,
     setIsSubmitted,
     setScore,
-    start,
-    setStart,
-    displayedNumber,
-    setDisplayedNumber,
     isSubmitted,
     score,
   } = useContext(TestContext);
+
   return (
     <>
       <Box sx={{ textAlign: "center" }}>
@@ -38,15 +35,7 @@ const TestDisplayRight: FC = () => {
           <TestResultAnswer questions={questions} answeredList={answeredList} />
         </>
       ) : (
-        <DisplayedQuestion
-          start={start}
-          setStart={setStart}
-          displayedNumber={displayedNumber}
-          answeredList={answeredList}
-          setAnsweredList={setAnsweredList}
-          questions={questions}
-          setDisplayedNumber={setDisplayedNumber}
-        />
+        <DisplayedQuestion />
       )}
     </>
   );

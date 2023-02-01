@@ -26,7 +26,7 @@ export default async function handler(
         ({ STT, ...keepAtrbs }: any) => ({ ...keepAtrbs })
       );
       if (!topic.title || !topic.image)
-        return res.status(400).json("Missing info");
+        return res.status(400).json("Thiếu thông tin");
       await prisma.topic.create({
         data: {
           title: topic.title,
@@ -38,10 +38,9 @@ export default async function handler(
           },
         },
       });
-      return res.status(200).json("Success");
+      return res.status(200).json("Tạo thành công");
     }
   } catch (error) {
-    console.log(error);
-    return res.status(500).json("Internal server error");
+    return res.status(500).json("Lỗi hệ thống");
   }
 }

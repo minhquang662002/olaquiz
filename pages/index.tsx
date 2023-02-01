@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (router.query.error == "auth-to-test") {
-      toast.error("You must login to do test!");
+      toast.error("Cần đăng nhập để thi thử!");
     }
   }, [router.query.error]);
 

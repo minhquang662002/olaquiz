@@ -13,10 +13,9 @@ export default async function handler(
     if (!req.body) {
       return res.status(400).json("No content!");
     }
-    const { firstName, lastName, email, password, confirm_password } = req.body;
+    const { name, email, password, confirm_password } = req.body;
     if (
-      !firstName.trim() ||
-      !lastName.trim() ||
+      !name.trim() ||
       !email ||
       !password ||
       !confirm_password
@@ -33,8 +32,7 @@ export default async function handler(
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
-        firstName,
-        lastName,
+        name,
         email,
         password: hashedPassword,
       },

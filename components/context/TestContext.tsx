@@ -7,6 +7,7 @@ import {
   FC,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 import { submitTest } from "../../utils/fns";
 import { useRouter } from "next/router";
@@ -55,11 +56,19 @@ const TestContextProvider: FC<{
           result?.answer?.map((item: Answer) => [item.number, item.answer])
         )
   );
-  const [isSubmitted, setIsSubmitted] = useState(!!result);
 
-  const [score, setScore] = useState(result?.score);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [score, setScore] = useState(0);
   const [start, setStart] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (result) {
+      setIsSubmitted(true);
+      setScore(result.score);
+    }
+  }, [result]);
 
   const RESULT = useMemo(
     () =>

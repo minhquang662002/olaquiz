@@ -6,7 +6,7 @@ import { Avatar, Box, Button, MenuItem, Menu } from "@mui/material";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-const NavLeft: FC = () => {
+const NavRight: FC = () => {
   const session = useSession();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -15,6 +15,7 @@ const NavLeft: FC = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const router = useRouter();
   return (
     <>
@@ -23,6 +24,7 @@ const NavLeft: FC = () => {
           <>
             <Avatar
               onClick={handleMenu}
+              src={session.data.user.avatar}
               sx={{
                 marginLeft: `${
                   router.pathname.startsWith("/admin") ? "auto" : ""
@@ -85,4 +87,4 @@ const NavLeft: FC = () => {
   );
 };
 
-export default NavLeft;
+export default NavRight;

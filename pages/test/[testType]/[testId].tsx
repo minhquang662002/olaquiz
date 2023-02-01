@@ -10,14 +10,14 @@ import { TimerContextProvider } from "../../../components/context/TimerContext";
 import loading from "../../../asset/loading.svg";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import {
-  TestContext,
-  TestContextProvider,
-} from "../../../components/context/TestContext";
-import { useContext } from "react";
+import { TestContextProvider } from "../../../components/context/TestContext";
 
 const TestDisplayRight = dynamic(
   import("../../../components/test/right/TestDisplayRight")
+);
+
+const SwipeableEdgeDrawer = dynamic(
+  import("../../../components/test/SwipeableEdgeDrawer")
 );
 
 const Test: NextPage = () => {
@@ -29,9 +29,9 @@ const Test: NextPage = () => {
       return res;
     },
     refetchOnWindowFocus: false,
+    enabled: !!router.query.testId,
   });
 
-  const { isSubmitted } = useContext(TestContext);
   return (
     <>
       <Head>
@@ -44,7 +44,16 @@ const Test: NextPage = () => {
       >
         <TimerContextProvider result={data?.data?.result}>
           <Container maxWidth="lg" sx={{ display: "flex", gap: 2, marginY: 2 }}>
-            <div>
+            <Box
+              sx={{
+                display: {
+                  xs: "none",
+                  md: "block",
+                  flexShrink: 0,
+                },
+              }}
+              width="30%"
+            >
               {isFetching ? (
                 <Box
                   style={{
@@ -53,10 +62,10 @@ const Test: NextPage = () => {
                     textAlign: "center",
                   }}
                 >
-                  <Image src={loading} alt="loading" />
+                  <Image src={loading} alt="loading" priority />
                 </Box>
               ) : (
-                <Box>
+                <>
                   <Box
                     sx={{
                       background: "white",
@@ -67,23 +76,24 @@ const Test: NextPage = () => {
                     <Typography>{data?.data?.name}</Typography>
                   </Box>
                   <QuestionPalette type="test" />
-                </Box>
+                  <Leaderboard ranking={data?.data?.ranking || []} />
+                </>
               )}
-              <Leaderboard ranking={data?.data?.raking || []} />
-            </div>
+            </Box>
 
             <Box sx={{ flexGrow: 1 }}>
               {isFetching ? (
                 <Box
                   sx={{ flexGrow: 1, background: "white", textAlign: "center" }}
                 >
-                  <Image src={loading} alt="loading" />
+                  <Image src={loading} alt="loading" priority />
                 </Box>
               ) : (
                 <TestDisplayRight />
               )}
             </Box>
           </Container>
+          <SwipeableEdgeDrawer />
         </TimerContextProvider>
       </TestContextProvider>
     </>

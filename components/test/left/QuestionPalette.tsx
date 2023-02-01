@@ -1,6 +1,6 @@
 import { FC, useState, useContext, memo } from "react";
 import { Question } from "@prisma/client";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Grid } from "@mui/material";
 import { ChevronLeft, ChevronRight, RestartAlt } from "@mui/icons-material";
 import { GlobalContext } from "../../context/GlobalContext";
 import QuestionPaletteButton from "./QuestionPaletteButton";
@@ -19,9 +19,11 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
     answeredList,
     start,
     isSubmitted,
+    setDisplayedNumber,
   } = useContext(TestContext);
   const restart = () => {
     setAnsweredList(new Map());
+    setDisplayedNumber(0);
   };
   const { hours, minutes, seconds } = useContext(TimerContext);
 
@@ -33,10 +35,15 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
 
   return (
     <Box
-      style={{
+      sx={{
         background: "white",
         padding: "10px",
         borderRadius: "10px",
+
+        display: {
+          xs: "none",
+          md: "block",
+        },
       }}
     >
       <Box
@@ -82,14 +89,7 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
           />
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(8, 30px)",
-          gridTemplateRows: "repeat(3, 30px)",
-          gap: 1,
-        }}
-      >
+      <Grid container gap={1} sx={{ justifyContent: "center", minHeight: 100 }}>
         {questions?.slice(page * 24, (page + 1) * 24).map((item: Question) => (
           <QuestionPaletteButton
             key={item.id}
@@ -100,10 +100,13 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
             questions={questions}
           />
         ))}
-      </Box>
+      </Grid>
 
       <br />
-      <TestProgress value={answeredList.size} total={questions.length} />
+      <TestProgress
+        value={answeredList.size}
+        total={questions?.length || 100}
+      />
       {type == "test" ? (
         <>
           {start && !isSubmitted && (

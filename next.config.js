@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   webpack: true,
-  images: { domains: ["res.cloudinary.com"] },
+  images: { domains: ["res.cloudinary.com", "storage.googleapis.com"] },
   webpack: (config) => {
     config.resolve.fallback = { fs: false };
     return config;

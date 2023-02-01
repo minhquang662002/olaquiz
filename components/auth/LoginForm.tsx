@@ -1,18 +1,24 @@
 import type { NextPage } from "next";
-import { Box, Button, Typography, TextField, Link } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  Link,
+  InputAdornment,
+} from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import { GlobalContext } from "../context/GlobalContext";
+import LockIcon from "@mui/icons-material/Lock";
+import EmailIcon from "@mui/icons-material/Email";
 
 const validationSchema = yup.object({
-  email: yup
-    .string()
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: yup.string().required("Password is required"),
+  email: yup.string().email("Nhập email").required("Thiếu trường email"),
+  password: yup.string().required("Thiếu trường mật khẩu"),
 });
 
 const LoginForm: NextPage<{
@@ -30,6 +36,7 @@ const LoginForm: NextPage<{
       const res = await signIn("credentials", { ...values, redirect: false });
       if (res?.error) {
         toast.error(res.error);
+        setIsLoading(false);
       }
       setIsLoading(false);
     },
@@ -59,36 +66,52 @@ const LoginForm: NextPage<{
           id="email"
           name="email"
           label="Email"
+          placeholder="tester@gmail.com"
           value={formik.values.email}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <EmailIcon />
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
           fullWidth
           id="password"
           name="password"
-          label="Password"
+          label="Mật khẩu"
           type="password"
+          placeholder="Mật khẩu"
           value={formik.values.password}
           onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockIcon />
+              </InputAdornment>
+            ),
+          }}
         />
         <Button color="primary" variant="contained" fullWidth type="submit">
-          Sign in
+          Đăng nhập
         </Button>
       </form>
-      <Link href="/forgot_password" sx={{ textAlign: "center" }}>
+      {/* <Link href="/forgot_password" sx={{ textAlign: "center" }}>
         Forgot password?
-      </Link>
+      </Link> */}
       <Typography sx={{ textAlign: "center" }}>
-        Don&apos;t have an account?{" "}
+        Chưa có tài khoản?{" "}
         <span
           className="register__direct"
           onClick={() => setIsHavingAccount(false)}
         >
-          Sign up
+          Đăng ký
         </span>
       </Typography>
     </Box>

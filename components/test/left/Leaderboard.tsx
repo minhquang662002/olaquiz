@@ -26,9 +26,8 @@ const Leaderboard: FC<Props> = ({ ranking }) => {
       <Divider />
       <List disablePadding>
         {ranking.map((item, index) => (
-          <Fragment key={index}>
+          <Fragment key={item.id}>
             <ListItem
-              key={item.id}
               sx={{
                 borderRadius: 2,
                 gap: 1,
@@ -61,7 +60,7 @@ const Leaderboard: FC<Props> = ({ ranking }) => {
                   <Avatar src={item.avatar} />
                 </ListItemAvatar>
                 <ListItemText sx={{ fontWeight: "bolder" }}>
-                  {item.firstName} {item.lastName}
+                  {item?.name}
                 </ListItemText>
               </Box>
               <Box

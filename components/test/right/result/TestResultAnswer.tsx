@@ -9,7 +9,10 @@ const TestResultAnswer: FC<any> = ({ questions, answeredList }) => {
     <Paper
       sx={{
         borderRadius: 2,
-        paddingX: 5,
+        paddingX: {
+          md: 5,
+          xs: 1,
+        },
         paddingY: 3,
       }}
     >

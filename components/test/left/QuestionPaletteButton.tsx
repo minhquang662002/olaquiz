@@ -1,9 +1,18 @@
 import { FC, useMemo } from "react";
-import { QuestionPalleteButtonProps } from "../../../utils/types";
 import { useContext } from "react";
 import { TestContext } from "../../context/TestContext";
+import { Grid } from "@mui/material";
+import { Question } from "@prisma/client";
 
-const QuestionPaletteButton: FC<any> = ({
+interface Props {
+  isSubmitted: boolean;
+  answeredList: Map<number, string>;
+  item: Question;
+  type: string;
+  questions: Question[];
+}
+
+const QuestionPaletteButton: FC<Props> = ({
   isSubmitted,
   answeredList,
   item,
@@ -41,15 +50,21 @@ const QuestionPaletteButton: FC<any> = ({
       if (answeredList.get(selectedQuestionNumber)) {
         setDisplayedNumber(selectedQuestionNumber);
       }
+      if (selectedQuestionNumber == 0) {
+        setDisplayedNumber(selectedQuestionNumber);
+      }
     }
   };
 
   return (
-    <div
+    <Grid
+      item
+      md={1.5}
       style={{
         borderRadius: 3,
         fontSize: 15,
         display: "flex",
+        alignSelf: "self-start",
         alignItems: "center",
         justifyContent: "center",
         background: buttonStyle,
@@ -75,7 +90,7 @@ const QuestionPaletteButton: FC<any> = ({
       onClick={() => handleChangeQuestion(item.STT - 1)}
     >
       {item.STT}
-    </div>
+    </Grid>
   );
 };
 

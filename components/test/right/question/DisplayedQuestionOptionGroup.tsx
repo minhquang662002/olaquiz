@@ -43,6 +43,7 @@ const DisplayedQuestionOptionGroup: FC<Props> = ({
       >
         {["A", "B", "C"].map((option: string, index) => (
           <FormControlLabel
+            sx={{ margin: 0 }}
             key={option}
             value={option}
             control={<Radio />}
@@ -51,6 +52,7 @@ const DisplayedQuestionOptionGroup: FC<Props> = ({
         ))}
         {item?.option_4 && (
           <FormControlLabel
+            sx={{ margin: 0 }}
             value="D"
             control={<Radio />}
             label={item?.option_4}

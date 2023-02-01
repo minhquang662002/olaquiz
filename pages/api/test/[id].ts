@@ -49,17 +49,18 @@ export default async function handler(
       });
 
       const ranking =
-        await prisma.$queryRaw`select max("Result"."score") as score, "User"."avatar", "User"."firstName",
-    "User"."lastName" from "Result"
+        await prisma.$queryRaw`select max("Result"."score") as score, "User"."avatar", "User"."name"
+ from "Result"
    inner join "User" on "User".id = "Result"."userId"
    inner join "Test" on "Test".id = "Result"."testId"
-   group by  "User"."avatar", "User"."firstName",
-    "User"."lastName", "Result"."testId"
+   group by  "User"."avatar", "User"."name",
+ "Result"."testId"
    having "Result"."testId" = ${id} order by score desc limit 10`;
 
       return res.status(200).json({ ...testQuery, result, ranking });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json("Lỗi hệ thống");
   }
 }

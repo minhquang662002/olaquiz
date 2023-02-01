@@ -11,14 +11,12 @@ interface Props {
 const Protected: React.FC<Props> = ({ children }) => {
   const session = useSession();
   const router = useRouter();
-  const [isAllowed, setIsAllowed] = useState(false);
+
   useEffect(() => {
     if (session.status != "loading") {
       if (!router.pathname.startsWith("/admin")) {
         if (session.data?.user.roleId == 1 || session.data?.user.roleId == 2) {
           router.replace("/admin/user");
-        } else {
-          setIsAllowed(true);
         }
       }
 
@@ -28,14 +26,12 @@ const Protected: React.FC<Props> = ({ children }) => {
           session.status == "unauthenticated"
         ) {
           router.replace("/");
-        } else {
-          setIsAllowed(true);
         }
       }
 
       if (router.pathname.startsWith("/test")) {
         if (session.status == "unauthenticated") {
-          router.replace("/?error=auth-to-login");
+          router.replace("/?error=auth-to-test");
         }
       }
     }

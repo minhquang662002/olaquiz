@@ -41,7 +41,9 @@ const PracticeResult: React.FC<Props> = ({ questions, answeredList }) => {
             borderRadius: 2,
           }}
         />
-        <b>{totalCorrect}/20 Correct</b>
+        <b>
+          {totalCorrect}/{questions.length} Correct
+        </b>
       </Box>
       <Box
         sx={{
@@ -59,7 +61,9 @@ const PracticeResult: React.FC<Props> = ({ questions, answeredList }) => {
             borderRadius: 2,
           }}
         />
-        <b>{totalIncorrect}/ 20 Incorrect</b>
+        <b>
+          {totalIncorrect}/ {questions.length} Incorrect
+        </b>
       </Box>
     </Box>
   );
