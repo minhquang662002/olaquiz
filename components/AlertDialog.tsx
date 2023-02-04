@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 
 import {
   Button,
@@ -10,19 +10,22 @@ import {
 } from "@mui/material";
 
 interface Props {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  setOpenDialog: Dispatch<SetStateAction<boolean>>;
+  title: string;
+  content: string;
+  progressTitle: string;
+  cancelTitle: string;
+  progressFn: any;
+  cancelFn: any;
 }
 
-const AlertDialog: FC<Props> = ({ setOpen, setOpenDialog }) => {
-  const confirmation = () => {
-    setOpenDialog(false);
-    setOpen(false);
-  };
-  const rejection = () => {
-    setOpenDialog(false);
-  };
-
+const AlertDialog: FC<Props> = ({
+  title,
+  content,
+  progressTitle,
+  cancelTitle,
+  progressFn,
+  cancelFn,
+}) => {
   return (
     <div>
       <Dialog
@@ -30,16 +33,16 @@ const AlertDialog: FC<Props> = ({ setOpen, setOpenDialog }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Hủy bài?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn đang viết bài. Ta có chắc là muốn thoát?
+            {content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={rejection}>Tiếp tục viết</Button>
-          <Button color="error" onClick={confirmation} autoFocus>
-            Thoát
+          <Button onClick={progressFn}>{progressTitle}</Button>
+          <Button color="error" onClick={cancelFn} autoFocus>
+            {cancelTitle}
           </Button>
         </DialogActions>
       </Dialog>

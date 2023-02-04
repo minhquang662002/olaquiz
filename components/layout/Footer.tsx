@@ -3,31 +3,31 @@ import Link from "next/link";
 const Footer = () => {
   const links = [
     {
-      title: "Home",
+      title: "Trang chủ",
       link: "/",
     },
     {
-      title: "Practice",
+      title: "Luyện tập",
       link: "/practice",
     },
     {
-      title: "Test",
+      title: "Thi thử",
       link: "/test",
     },
     {
-      title: "About us",
+      title: "Về chúng tôi",
       link: "/about-us",
     },
     {
-      title: "Contact",
+      title: "Liên hệ",
       link: "/contact",
     },
     {
-      title: "Terms",
+      title: "Chính sách",
       link: "/terms",
     },
     {
-      title: "Privacy",
+      title: "Bảo mật",
       link: "/privacy",
     },
   ];

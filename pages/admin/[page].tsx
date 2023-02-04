@@ -24,7 +24,7 @@ const Admin: NextPage<{ page: string }> = ({ page }) => {
   return (
     <>
       <Head>
-        <title>Quản lý {TITLE}</title>
+        <title>{`Quản lý ${TITLE}`}</title>
       </Head>
       <Box sx={{ display: "flex", height: "100vh" }}>
         <AdminDrawer />

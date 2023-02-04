@@ -51,10 +51,25 @@ const PracticeExerciseCreateModal: FC<Props> = ({ open, setOpen }) => {
       toast.error(error as string);
     },
   });
+
+  const cancelFn = () => {
+    setOpenDialog(false);
+    setOpen(false);
+  };
+  const progressFn = () => {
+    setOpenDialog(false);
+  };
   return (
     <>
       {openDialog && (
-        <AlertDialog setOpen={setOpen} setOpenDialog={setOpenDialog} />
+        <AlertDialog
+          title={"Thoát"}
+          content={"Bạn đang tạo bài tập. Bạn có chắc là muốn thoát?"}
+          progressTitle="Tiếp tục"
+          cancelTitle="Thoát"
+          progressFn={progressFn}
+          cancelFn={cancelFn}
+        />
       )}
       <Modal
         open={open}

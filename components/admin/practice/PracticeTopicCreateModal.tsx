@@ -28,10 +28,25 @@ const PracticeTopicCreateModal: FC<Props> = ({ open, setOpen }) => {
       setOpen(false);
     },
   });
+
+  const cancelFn = () => {
+    setOpenDialog(false);
+    setOpen(false);
+  };
+  const progressFn = () => {
+    setOpenDialog(false);
+  };
   return (
     <>
       {openDialog && (
-        <AlertDialog setOpen={setOpen} setOpenDialog={setOpenDialog} />
+        <AlertDialog
+          title={"Hủy bài"}
+          content={"Bạn tạo chủ đề bài luyện tập. Bạn có chắc là muốn thoát?"}
+          progressTitle="Tiếp tục viết"
+          cancelTitle="Thoát"
+          progressFn={progressFn}
+          cancelFn={cancelFn}
+        />
       )}
       <Modal
         open={open}

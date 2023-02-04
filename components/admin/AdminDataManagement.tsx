@@ -7,6 +7,7 @@ import TopicCreateModal from "./vocabulary/TopicCreateModal";
 import TestCreateModal from "./test/TestCreateModal";
 import PracticeTopicCreateModal from "./practice/PracticeTopicCreateModal";
 import PracticeExerciseCreateModal from "./practice/PracticeExerciseCreateModal";
+import PostEditModal from "./post/PostEditModal";
 
 interface Props {
   page: string;
@@ -16,6 +17,8 @@ interface Props {
 const AdminDataManagement: FC<Props> = ({ page, type }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [itemId, setItemId] = useState<string>("");
+  let edit_modal;
   let create_modal;
   let heads;
   let title;
@@ -23,6 +26,9 @@ const AdminDataManagement: FC<Props> = ({ page, type }) => {
     create_modal = <PostCreateModal open={open} setOpen={setOpen} />;
     heads = ["ID", "Tiêu đề", "Danh mục", ""];
     title = "bài viết";
+    edit_modal = (
+      <PostEditModal open={!!openEdit} setOpen={setOpenEdit} itemId={itemId} />
+    );
   } else if (page == "vocabulary") {
     create_modal = <TopicCreateModal open={open} setOpen={setOpen} />;
     heads = ["ID", "Chủ đề", ""];
@@ -32,7 +38,7 @@ const AdminDataManagement: FC<Props> = ({ page, type }) => {
     heads = ["ID", "Tên", "Dạng bài", ""];
     title = "bài thi";
   } else if (page == "user") {
-    heads = ["ID", "Tên", "Họ", "Email", "Vai trò", ""];
+    heads = ["ID", "Tên", "Email", "Vai trò", ""];
     title = "người dùng";
   } else if (page == "practice") {
     if (type == "topic") {
@@ -58,6 +64,7 @@ const AdminDataManagement: FC<Props> = ({ page, type }) => {
   return (
     <>
       {open && create_modal}
+      {openEdit && edit_modal}
       <Typography variant="h5" sx={{ fontWeight: "600", marginBottom: 2 }}>
         Quản lý {title}
       </Typography>
@@ -72,7 +79,13 @@ const AdminDataManagement: FC<Props> = ({ page, type }) => {
           Tạo {title}
         </Button>
       )}
-      <DataTable heads={heads as string[]} page={page} type={type} />
+      <DataTable
+        heads={heads as string[]}
+        page={page}
+        type={type}
+        setOpen={setOpenEdit}
+        setItemId={setItemId}
+      />
     </>
   );
 };

@@ -8,24 +8,33 @@ import {
   CardContent,
   Button,
   Typography,
+  Skeleton,
 } from "@mui/material";
-import type { NextPage } from "next";
-import { useState, useContext, SetStateAction, useMemo } from "react";
+import {
+  useState,
+  useContext,
+  SetStateAction,
+  useMemo,
+  useEffect,
+  FC,
+} from "react";
 import dynamic from "next/dynamic";
-import { handleCreatePost, handlePreviewImage } from "../../../utils/fns";
+import { handlePreviewImage, uploadFiles } from "../../../utils/fns";
 import { GlobalContext } from "../../context/GlobalContext";
 import CloseIcon from "@mui/icons-material/Close";
 import AlertDialog from "../../AlertDialog";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import axios from "axios";
 import { toast } from "react-toastify";
 
-const TestEditor = dynamic(() => import("../Editor"), {
+const Editor = dynamic(() => import("../Editor"), {
   ssr: false,
 });
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
+  itemId?: string;
 }
 
 interface PreviewProps {
@@ -35,15 +44,40 @@ interface PreviewProps {
   category: string;
 }
 
-const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
+const PostEditModal: FC<Props> = ({ itemId, open, setOpen }) => {
   const [post, setPost] = useState<PreviewProps>({
     title: "",
     image: null,
     summary: "",
     category: "",
   });
-  const [content, setContent] = useState<string>("");
 
+  const [content, setContent] = useState<string>("");
+  const { data, isLoading } = useQuery({
+    queryKey: ["adminData", itemId],
+    queryFn: async () => {
+      try {
+        const res = await axios.get(`/api/admin/post/${itemId}`);
+        return res.data;
+      } catch (error) {
+        //@ts-ignore
+        toast.error((error?.response?.data as string) || "");
+      }
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!itemId,
+  });
+  useEffect(() => {
+    if (data) {
+      setPost({
+        title: data.title,
+        image: data.image,
+        category: data.category,
+        summary: data.summary,
+      });
+      setContent(data.content);
+    }
+  }, [data]);
   const queryClient = useQueryClient();
   const { setIsLoading } = useContext(GlobalContext);
   const [openDialog, setOpenDialog] = useState(false);
@@ -72,25 +106,7 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
     }
   };
 
-  const createMutation = useMutation({
-    mutationFn: () => handleCreatePost({ ...post, content }),
-
-    onMutate: () => {
-      setIsLoading(true);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries("adminData");
-      setIsLoading(false);
-      toast.success("Thêm thành công");
-      setOpen(false);
-    },
-    onError: (error) => {
-      toast.error(error as string);
-      setIsLoading(false);
-    },
-  });
-
-  const cancelFn = () => {
+  const cancelFn = async () => {
     setOpenDialog(false);
     setOpen(false);
   };
@@ -98,13 +114,37 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
     setOpenDialog(false);
   };
 
+  const updateMutation = useMutation({
+    mutationFn: async (id) => {
+      setIsLoading(true);
+      await axios.patch(`/api/admin/post/${id}`, {
+        content,
+        ...post,
+        image:
+          typeof post.image == "string"
+            ? post.image
+            : await uploadFiles([post.image as File]),
+      });
+      setIsLoading(false);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminData");
+      toast.success("Sửa thành công!");
+      setIsLoading(false);
+    },
+    onError: () => {
+      toast.error("Lỗi");
+      setIsLoading(false);
+    },
+  });
+
   return (
     <>
       {openDialog && (
         <AlertDialog
-          title={"Hủy bài"}
-          content={"Bạn đang viết bài. Bạn có chắc là muốn thoát?"}
-          progressTitle="Tiếp tục viết"
+          title={"Thoát"}
+          content={"Bạn đang sửa bài. Bạn có chắc là muốn thoát?"}
+          progressTitle="Tiếp tục"
           cancelTitle="Thoát"
           progressFn={progressFn}
           cancelFn={cancelFn}
@@ -137,13 +177,10 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
                 fontWeight: "bolder",
               }}
             >
-              Create post
+              Sửa bài viết
             </Typography>
 
-            <CloseIcon
-              sx={{ cursor: "pointer" }}
-              onClick={() => setOpen(false)}
-            />
+            <CloseIcon sx={{ cursor: "pointer" }} onClick={handleClose} />
           </Box>
           <Divider sx={{ marginY: 2 }} />
           <Typography variant="h6" fontWeight="500">
@@ -166,6 +203,7 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
                 onChange={(e) =>
                   setPost((state) => ({ ...state, title: e.target.value }))
                 }
+                value={post.title}
               />
               <label>Hình ảnh:</label>
               <input
@@ -197,22 +235,48 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
                 onChange={(e) =>
                   setPost((state) => ({ ...state, summary: e.target.value }))
                 }
+                value={post.summary}
               />
             </Box>
             <Card sx={{ width: "40%", maxHeight: "100%" }}>
-              <CardMedia
-                component="img"
-                sx={{ maxHeight: 250 }}
-                src={
-                  post.image?.preview ||
-                  "https://www.pays-sud-charente.com/inc/image/img_actualite/defaut.png"
-                }
-              />
+              {isLoading ? (
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  sx={{ height: 250, marginBottom: 2 }}
+                />
+              ) : (
+                <CardMedia
+                  component="img"
+                  sx={{ maxHeight: 250 }}
+                  src={
+                    typeof post.image == "string"
+                      ? post.image
+                      : post.image?.preview
+                      ? post.image.preview
+                      : "https://www.pays-sud-charente.com/inc/image/img_actualite/defaut.png"
+                  }
+                />
+              )}
+
               <CardContent>
-                <Typography variant="h6">{post.title}</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {post.summary}
-                </Typography>
+                {isLoading ? (
+                  <>
+                    <Skeleton
+                      animation="wave"
+                      height={20}
+                      style={{ marginBottom: 6 }}
+                    />
+                    <Skeleton animation="wave" height={10} />
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="h6">{post.title}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {post.summary}
+                    </Typography>
+                  </>
+                )}
               </CardContent>
             </Card>
           </Box>
@@ -222,13 +286,13 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
           <Typography variant="h6" fontWeight="500">
             Nội dung bài viết
           </Typography>
-          <TestEditor content={content} setContent={setContent} />
+          <Editor content={content} setContent={setContent} />
           <Button
             variant="contained"
             sx={{ marginTop: 8, width: "100%" }}
-            onClick={() => createMutation.mutate()}
+            onClick={() => updateMutation.mutate()}
           >
-            Tạo
+            Sửa
           </Button>
         </Box>
       </Modal>
@@ -236,4 +300,4 @@ const PostCreateModal: NextPage<Props> = ({ open, setOpen }) => {
   );
 };
 
-export default PostCreateModal;
+export default PostEditModal;
