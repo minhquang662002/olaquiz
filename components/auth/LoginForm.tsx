@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import {
   Box,
   Button,
@@ -21,9 +20,7 @@ const validationSchema = yup.object({
   password: yup.string().required("Thiếu trường mật khẩu"),
 });
 
-const LoginForm: NextPage<{
-  setIsHavingAccount: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setIsHavingAccount }) => {
+const LoginForm = () => {
   const { setIsLoading } = useContext(GlobalContext);
   const formik = useFormik({
     initialValues: {
@@ -33,7 +30,7 @@ const LoginForm: NextPage<{
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-      const res = await signIn("credentials", { ...values, redirect: false });
+      const res = await signIn("credentials", { ...values });
       if (res?.error) {
         toast.error(res.error);
         setIsLoading(false);
@@ -109,7 +106,7 @@ const LoginForm: NextPage<{
         Chưa có tài khoản?{" "}
         <span
           className="register__direct"
-          onClick={() => setIsHavingAccount(false)}
+          onClick={() => window.location.replace("/register")}
         >
           Đăng ký
         </span>

@@ -1,14 +1,14 @@
 import { Grid } from "@mui/material";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import LoginForm from "../components/auth/LoginForm";
-import { GetServerSideProps } from "next";
+import RegisterForm from "../components/auth/RegisterForm";
 import { getSession } from "next-auth/react";
 
-const LoginPage = () => {
+const RegisterPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Đăng nhập</title>
+        <title>Đăng ký</title>
       </Head>
       <Grid
         container
@@ -19,14 +19,14 @@ const LoginPage = () => {
         style={{ minHeight: "100vh" }}
       >
         <Grid item xs={3}>
-          <LoginForm />
+          <RegisterForm />
         </Grid>
       </Grid>
     </>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);

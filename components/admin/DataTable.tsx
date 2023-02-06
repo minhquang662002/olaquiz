@@ -47,10 +47,11 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
           type ? `/${type}` : ""
         }?page=${currentPage}&rows=${rowsPerPage}`
       );
-      return res;
+      return res.data;
     },
     refetchOnWindowFocus: false,
   });
+
   const [openDialog, setOpenDialog] = useState(false);
   const mutation = useMutation({
     mutationFn: (id) => {
@@ -107,7 +108,7 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.data?.map((datum: any) => (
+              {data?.map((datum: any) => (
                 <TableRow key={datum.id}>
                   {Object.keys(datum).map((item) => (
                     <TableCell key={item}>{datum[item]}</TableCell>
@@ -135,12 +136,7 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
                       variant="contained"
                       color="error"
                       onClick={() => {
-                        if (
-                          page == "vocabulary" ||
-                          page == "practice" ||
-                          page == "test" ||
-                          page == "post"
-                        ) {
+                        {
                           setOpenDialog(true);
                         }
                       }}

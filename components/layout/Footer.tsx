@@ -15,7 +15,7 @@ const Footer = () => {
       link: "/test",
     },
     {
-      title: "Về chúng tôi",
+      title: "Giới thiệu",
       link: "/about-us",
     },
     {
@@ -23,11 +23,11 @@ const Footer = () => {
       link: "/contact",
     },
     {
-      title: "Chính sách",
+      title: "Điều khoản",
       link: "/terms",
     },
     {
-      title: "Bảo mật",
+      title: "Quyền riêng tư",
       link: "/privacy",
     },
   ];

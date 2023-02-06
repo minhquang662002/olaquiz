@@ -30,9 +30,7 @@ const validationSchema = yup.object({
     .required("Cần xác nhận mật khẩu"),
 });
 
-const RegisterForm: NextPage<{
-  setIsHavingAccount: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setIsHavingAccount }) => {
+const RegisterForm = () => {
   const { setIsLoading } = useContext(GlobalContext);
   const formik = useFormik({
     initialValues: {
@@ -154,7 +152,7 @@ const RegisterForm: NextPage<{
 
       <Typography
         sx={{ textAlign: "center" }}
-        onClick={() => setIsHavingAccount(true)}
+        onClick={() => window.location.replace("/login")}
       >
         Đã có tài khoản? <span className="login__direct">Đăng nhập</span>
       </Typography>

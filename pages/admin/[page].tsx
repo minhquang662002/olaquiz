@@ -1,13 +1,14 @@
 import { NextPage, GetServerSideProps } from "next";
 import { useMemo } from "react";
 import Head from "next/head";
-import AdminDataManagement from "../../components/admin/AdminDataManagement";
 import { Box } from "@mui/material";
 import Navbar from "../../components/navbar/Navbar";
 import AdminDrawer from "../../components/admin/AdminDrawer";
-
+import dynamic from "next/dynamic";
+const AdminDataManagement = dynamic(
+  import("../../components/admin/AdminDataManagement")
+);
 const Admin: NextPage<{ page: string }> = ({ page }) => {
-  const CONTENT = <AdminDataManagement page={page} />;
   const TITLE = useMemo(() => {
     if (page == "user") {
       return "người dùng";
@@ -31,7 +32,9 @@ const Admin: NextPage<{ page: string }> = ({ page }) => {
         <div style={{ width: "80%" }}>
           <Navbar />
 
-          <div style={{ padding: 20 }}>{CONTENT}</div>
+          <div style={{ padding: 20 }}>
+            <AdminDataManagement page={page} />
+          </div>
         </div>
       </Box>
     </>

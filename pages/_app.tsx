@@ -1,7 +1,9 @@
 import "../styles/globals.css";
+import { useRouter } from "next/router";
+import Navbar from "../components/navbar/Navbar";
+import Footer from "../components/layout/Footer";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import Protected from "../components/auth/Protected";
 import { GlobalContextProvider } from "../components/context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider, createTheme } from "@mui/material";
@@ -25,16 +27,26 @@ function MyApp({ Component, pageProps }: AppProps) {
       ].join(","),
     },
   });
-
+  const router = useRouter();
   return (
     <SessionProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
         <GlobalContextProvider>
           <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-              <Protected>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                {!router.pathname.startsWith("/admin") && <Navbar />}
                 <Component {...pageProps} />
-              </Protected>
+                {!new RegExp(/test\/.*\/.*/).test(router.pathname) && (
+                  <Footer />
+                )}
+              </div>
             </LocalizationProvider>
           </ThemeProvider>
         </GlobalContextProvider>

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "../../../utils/db";
+import { User } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -10,9 +11,11 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
+
       credentials: {},
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { email, password } = credentials as {
           email: string;
           password: string;
@@ -22,13 +25,13 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          throw Error("This email does not exist!");
+          throw Error("Email này không tồn tại!");
         }
 
         const isCorrectPassword = await bcrypt.compare(password, user.password);
 
         if (!isCorrectPassword) {
-          throw Error("Email or password is incorrect!");
+          throw Error("Email hoặc mật khẩu không đúng!");
         }
         return user;
       },
@@ -38,17 +41,18 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    jwt(params) {
-      if (params.user) {
-        params.token.user = params.user;
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user;
       }
-      return params.token;
+      return token;
     },
-    session(params) {
-      //@ts-ignore
-      params.session.user = params.token.user;
+    async session({ session, token }) {
+      if (token?.user) {
+        session.user = token.user as User;
+      }
 
-      return params.session;
+      return session;
     },
   },
 };
