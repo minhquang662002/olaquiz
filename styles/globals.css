@@ -80,6 +80,23 @@ a {
   animation-delay: -5s;
   animation-duration: 20s;
 }
+
+.game-image-widget, .game-image-widget-backdrop-preview, .zoom-para{
+  display: none;
+}
+
+.game-image-widget-container{
+  width: auto !important;
+  text-align: center;
+  height: 250px;
+}
+
+.game-image-widget-container > img {
+  max-width: 60%;
+  max-height: 100%;
+
+}
+
 @keyframes move-forever {
   0% {
    transform: translate3d(-90px,0,0);

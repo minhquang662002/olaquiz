@@ -87,6 +87,12 @@ export const getStaticProps: GetStaticProps = async () => {
     where: {
       category: "/grammar",
     },
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      image: true,
+    },
   });
 
   return {

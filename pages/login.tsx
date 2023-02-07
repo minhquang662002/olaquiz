@@ -1,10 +1,21 @@
 import { Grid } from "@mui/material";
 import Head from "next/head";
 import LoginForm from "../components/auth/LoginForm";
-import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const session = useSession();
+  useEffect(() => {
+    if (session.status == "authenticated") {
+      if (session.data.user.roleId == 1 || session.data.user.roleId == 2) {
+        window.location.replace("/admin/user");
+      } else if (session.data.user.roleId == 3) {
+        window.location.replace("/");
+      }
+    }
+  }, [session]);
+
   return (
     <>
       <Head>
@@ -27,27 +38,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
-  if (session) {
-    if (session.user.roleId == 1 || session.user.roleId == 2) {
-      return {
-        redirect: {
-          destination: "/admin/user",
-          permanent: false,
-        },
-      };
-    } else if (session.user.roleId == 3) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-  }
-  return {
-    props: {},
-  };
-};

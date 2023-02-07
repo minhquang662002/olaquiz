@@ -181,7 +181,9 @@ export const handleCreateExam = async (
       return Promise.reject("Thiếu thông tin cho bài thi");
     }
 
-    questions = await addToExcel(questions, imageFiles, "image");
+    if (imageFiles.length > 0) {
+      questions = await addToExcel(questions, imageFiles, "image");
+    }
     questions = await addToExcel(questions, audioFiles, "audio");
 
     await axios.post(`/api/admin/test`, { questions, testName, testType });

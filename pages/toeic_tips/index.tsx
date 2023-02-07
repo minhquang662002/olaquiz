@@ -84,6 +84,15 @@ export const getStaticProps: GetStaticProps = async () => {
     where: {
       category: "/toeic_tips",
     },
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      image: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return {

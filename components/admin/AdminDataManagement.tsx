@@ -84,6 +84,7 @@ const AdminDataManagement: FC<Props> = ({ page, type }) => {
         page={page}
         type={type}
         setOpen={setOpenEdit}
+        itemId={itemId}
         setItemId={setItemId}
       />
     </>

@@ -22,6 +22,7 @@ export default async function handler(
       if (!content || !image || !title || !summary || !category) {
         return res.status(400).json("Thiếu thông tin");
       }
+
       const post = await prisma.post.update({
         where: {
           id: id as string,

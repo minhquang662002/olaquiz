@@ -57,7 +57,10 @@ const DisplayedQuestionContent: FC<Props> = ({
       ) : (
         <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           {question[0]?.paragraph && (
-            <Typography>{question[0].paragraph}</Typography>
+            <div
+              dangerouslySetInnerHTML={{ __html: question[0].paragraph }}
+              style={{ margin: "5px 0" }}
+            />
           )}
           {question[0]?.image && (
             <Box style={{ textAlign: "center" }}>

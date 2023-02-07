@@ -13,11 +13,13 @@ import dynamic from "next/dynamic";
 import { TestContextProvider } from "../../../components/context/TestContext";
 
 const TestDisplayRight = dynamic(
-  import("../../../components/test/right/TestDisplayRight")
+  import("../../../components/test/right/TestDisplayRight"),
+  { ssr: false }
 );
 
 const SwipeableEdgeDrawer = dynamic(
-  import("../../../components/test/SwipeableEdgeDrawer")
+  import("../../../components/test/SwipeableEdgeDrawer"),
+  { ssr: false }
 );
 
 const Test: NextPage = () => {

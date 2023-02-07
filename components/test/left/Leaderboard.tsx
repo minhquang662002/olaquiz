@@ -60,7 +60,7 @@ const Leaderboard: FC<Props> = ({ ranking }) => {
                   <Avatar src={item.avatar} />
                 </ListItemAvatar>
                 <ListItemText sx={{ fontWeight: "bolder" }}>
-                  {item?.name}
+                  {item.name}
                 </ListItemText>
               </Box>
               <Box

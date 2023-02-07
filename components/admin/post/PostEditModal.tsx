@@ -115,7 +115,7 @@ const PostEditModal: FC<Props> = ({ itemId, open, setOpen }) => {
   };
 
   const updateMutation = useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: string) => {
       setIsLoading(true);
       await axios.patch(`/api/admin/post/${id}`, {
         content,
@@ -131,6 +131,7 @@ const PostEditModal: FC<Props> = ({ itemId, open, setOpen }) => {
       queryClient.invalidateQueries("adminData");
       toast.success("Sửa thành công!");
       setIsLoading(false);
+      setOpen(false);
     },
     onError: () => {
       toast.error("Lỗi");
@@ -290,7 +291,7 @@ const PostEditModal: FC<Props> = ({ itemId, open, setOpen }) => {
           <Button
             variant="contained"
             sx={{ marginTop: 8, width: "100%" }}
-            onClick={() => updateMutation.mutate()}
+            onClick={() => updateMutation.mutate(itemId || "")}
           >
             Sửa
           </Button>

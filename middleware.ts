@@ -22,12 +22,18 @@ export default withAuth(
     if (req.nextUrl.pathname.startsWith("/test") && !req.nextauth.token) {
       return NextResponse.redirect(new URL("/?error=auth-to-test", req.url));
     }
-    if (req.nextUrl.pathname.startsWith("/api/admin")) {
+
+    if (
+      req.nextUrl.pathname.startsWith("/login") ||
+      req.nextUrl.pathname.startsWith("/register")
+    ) {
       if (
         (req.nextauth.token?.user as User)?.roleId == 1 ||
         (req.nextauth.token?.user as User)?.roleId == 2
       ) {
-        return NextResponse.next();
+        return NextResponse.redirect(new URL("/admin/user", req.url));
+      } else if ((req.nextauth.token?.user as User)?.roleId == 3) {
+        return NextResponse.redirect(new URL("/", req.url));
       }
     }
   },

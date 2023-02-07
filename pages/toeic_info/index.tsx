@@ -88,6 +88,12 @@ export const getStaticProps: GetStaticProps = async () => {
     where: {
       category: "/toeic_info",
     },
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      image: true,
+    },
   });
   return {
     props: {

@@ -3,7 +3,6 @@ import {
   Button,
   Typography,
   TextField,
-  Link,
   InputAdornment,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -30,7 +29,7 @@ const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-      const res = await signIn("credentials", { ...values });
+      const res = await signIn("credentials", { ...values, redirect: false });
       if (res?.error) {
         toast.error(res.error);
         setIsLoading(false);
@@ -99,9 +98,6 @@ const LoginForm = () => {
           Đăng nhập
         </Button>
       </form>
-      {/* <Link href="/forgot_password" sx={{ textAlign: "center" }}>
-        Forgot password?
-      </Link> */}
       <Typography sx={{ textAlign: "center" }}>
         Chưa có tài khoản?{" "}
         <span

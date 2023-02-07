@@ -1,4 +1,11 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import {
   Table,
   TableBody,
@@ -17,16 +24,25 @@ import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import AlertDialog from "../AlertDialog";
+import { GlobalContext } from "../context/GlobalContext";
 
 interface Props {
   heads: string[];
   type?: string;
   page: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  itemId: string;
   setItemId: Dispatch<SetStateAction<string>>;
 }
 
-const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
+const DataTable: FC<Props> = ({
+  heads,
+  page,
+  type,
+  setOpen,
+  itemId,
+  setItemId,
+}) => {
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -38,7 +54,7 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setCurrentPage(newPage);
   };
-
+  const { setIsLoading } = useContext(GlobalContext);
   const { data, isFetching } = useQuery({
     queryKey: ["adminData", page, currentPage, type],
     queryFn: async () => {
@@ -54,12 +70,20 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const mutation = useMutation({
-    mutationFn: (id) => {
-      return axios.delete(`/api/admin/${page}${type ? `/${type}` : ""}/${id}`);
+    mutationFn: async (id: string) => {
+      setIsLoading(true);
+      await axios.delete(`/api/admin/${page}${type ? `/${type}` : ""}/${id}`);
+      setIsLoading(false);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminData"] });
       toast.success("Xóa thành công!");
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      //@ts-ignore
+      toast.error((error?.response?.data as string) || "Lỗi");
+      setIsLoading(false);
     },
   });
 
@@ -69,9 +93,9 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
     };
   }, [type]);
 
-  const cancelFn = () => {
+  const cancelFn = (id: string) => {
     setOpenDialog(false);
-    mutation.mutate();
+    mutation.mutate(id);
   };
 
   return (
@@ -82,7 +106,7 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
           progressTitle="Hủy"
           content="Bạn có chắc là muốn xóa?"
           cancelTitle="Tiếp tục"
-          cancelFn={cancelFn}
+          cancelFn={() => cancelFn(itemId)}
           progressFn={() => setOpenDialog(false)}
         />
       )}
@@ -123,9 +147,8 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
                           variant="contained"
                           color="primary"
                           onClick={() => {
-                            if (datum?.id) {
-                              setItemId(datum.id);
-                            }
+                            setItemId(datum.id);
+
                             setOpen(true);
                           }}
                         >
@@ -137,6 +160,7 @@ const DataTable: FC<Props> = ({ heads, page, type, setOpen, setItemId }) => {
                       color="error"
                       onClick={() => {
                         {
+                          setItemId(datum.id);
                           setOpenDialog(true);
                         }
                       }}
