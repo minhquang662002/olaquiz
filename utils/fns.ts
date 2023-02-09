@@ -177,7 +177,7 @@ export const handleCreateExam = async (
   audioFiles: any
 ) => {
   try {
-    if (!testName) {
+    if (!testName || !testType || !questions.length) {
       return Promise.reject("Thiếu thông tin cho bài thi");
     }
 

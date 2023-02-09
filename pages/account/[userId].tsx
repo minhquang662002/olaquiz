@@ -113,6 +113,7 @@ const AccountPage: FC<Props> = ({ user }) => {
           display: "flex",
           flexDirection: {
             xs: "column",
+            md: "row",
           },
           gap: 10,
         }}
@@ -157,7 +158,7 @@ const AccountPage: FC<Props> = ({ user }) => {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: { xs: "column" },
+                  flexDirection: { xs: "column", md: "row" },
                   gap: 2,
                 }}
               >
@@ -200,7 +201,7 @@ const AccountPage: FC<Props> = ({ user }) => {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: { xs: "column" },
+                  flexDirection: { xs: "column", md: "row" },
                   gap: 2,
                 }}
               >

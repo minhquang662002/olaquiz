@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import {
   Container,
   Typography,
@@ -10,16 +10,16 @@ import {
 import { Fragment } from "react";
 import { prisma } from "../../../utils/db";
 import { Test } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth/next";
-import { authOptions } from "../../api/auth/[...nextauth]";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 
 interface Props {
   tests: (Test & { result: string })[];
+  testType: string;
 }
 
-const TestTypePage: NextPage<Props> = ({ tests }) => {
+const TestTypePage: NextPage<Props> = ({ tests, testType }) => {
   const router = useRouter();
   return (
     <>
@@ -27,10 +27,18 @@ const TestTypePage: NextPage<Props> = ({ tests }) => {
         <title>Thi thử</title>
       </Head>
       <Container maxWidth="lg">
-        <Typography variant="h4" textAlign="center" fontWeight="bold">
-          Start your TOEIC Online Mini Test Now!
+        <Typography
+          variant="h4"
+          textAlign="center"
+          fontWeight="bold"
+          marginY={2}
+        >
+          Bắt đầu {testType == "mini-test" ? "bài thi nhỏ" : "bài thi đầy đủ"}{" "}
+          ngay bây giờ!
         </Typography>
-        <Typography>MINI TEST</Typography>
+        <Typography fontWeight="bold" sx={{ marginY: 2 }}>
+          BÀI THI {testType == "mini-test" ? "BÀI THI NHỎ" : "BÀI THI ĐẦY ĐỦ"}
+        </Typography>
         <List sx={{ background: "white" }} disablePadding>
           {tests.map((item) => (
             <Fragment key={item.id}>
@@ -75,21 +83,8 @@ const TestTypePage: NextPage<Props> = ({ tests }) => {
 export default TestTypePage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions
-  );
+  const session = await getSession(ctx);
   const { testType } = ctx.query;
-
-  if (!session) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/?error=auth-to-test",
-      },
-    };
-  }
 
   const tests =
     await prisma.$queryRaw`select *, (select "Result"."score" from "Result" 
@@ -100,6 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       tests,
+      testType,
     },
   };
 };

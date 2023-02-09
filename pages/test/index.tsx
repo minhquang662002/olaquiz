@@ -5,7 +5,7 @@ import mini from "../../asset/mini-test.webp";
 import Image from "next/image";
 import Head from "next/head";
 
-const index: NextPage = () => {
+const TestIntroPage: NextPage = () => {
   return (
     <>
       <Head>
@@ -64,7 +64,7 @@ const index: NextPage = () => {
               href="/test/full-test"
               sx={{ position: "absolute", right: 20, bottom: 20 }}
             >
-              Start
+              Bắt đầu
             </Button>
           </Box>
         </Box>
@@ -151,4 +151,4 @@ const index: NextPage = () => {
   );
 };
 
-export default index;
+export default TestIntroPage;

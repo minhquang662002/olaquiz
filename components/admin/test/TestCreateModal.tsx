@@ -21,7 +21,6 @@ const TestCreateModal: FC<Props> = ({ open, setOpen }) => {
   const excelRef = useRef<any>([]);
   const audioFiles = useRef<any>([]);
   const imageFiles = useRef<any>([]);
-
   const createMutation = useMutation({
     mutationFn: () =>
       handleCreateExam(
@@ -122,12 +121,15 @@ const TestCreateModal: FC<Props> = ({ open, setOpen }) => {
               onChange={(e) => setTestName(e.target.value)}
             />
             <label>Dạng bài thi:</label>
-            <select onChange={(e) => setTestType(e.target.value)}>
-              <option disabled defaultChecked>
+            <select
+              onChange={(e) => setTestType(e.target.value)}
+              defaultValue={""}
+            >
+              <option disabled hidden value="">
                 Dạng bài
               </option>
-              <option value="full-test">Full test</option>
-              <option value="mini-test">Mini test</option>
+              <option value="full-test">Bài thi đầy đủ</option>
+              <option value="mini-test">Bài thi nhỏ</option>
             </select>
             <label>File excel:</label>
             <input
