@@ -102,11 +102,7 @@ const QuestionPalette: FC<{ type: string }> = ({ type }) => {
             />
           </Box>
         </Box>
-        <Grid
-          container
-          gap={1}
-          sx={{ justifyContent: "center", minHeight: 100 }}
-        >
+        <Grid container gap={1} sx={{ minHeight: 100 }}>
           {questions
             ?.slice(page * 24, (page + 1) * 24)
             .map((item: Question) => (

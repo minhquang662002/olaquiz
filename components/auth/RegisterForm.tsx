@@ -9,7 +9,7 @@ import {
 import { useFormik } from "formik";
 import * as yup from "yup";
 import React from "react";
-import { register } from "../../utils/api";
+import { register } from "../../utils/fns";
 import { useContext } from "react";
 import { GlobalContext } from "../context/GlobalContext";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";

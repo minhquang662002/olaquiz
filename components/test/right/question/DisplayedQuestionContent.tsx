@@ -2,7 +2,6 @@ import { Question } from "@prisma/client";
 import { FC } from "react";
 import Image from "next/image";
 import { Box } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import startImg from "../../../../asset/practice-in-progress.svg";
 import QuestionOptionGroup from "./DisplayedQuestionOptionGroup";
 

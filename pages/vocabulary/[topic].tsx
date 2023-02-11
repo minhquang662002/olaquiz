@@ -4,14 +4,21 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { Container, Box, Divider } from "@mui/material";
 import Image from "next/image";
-const TopicPage: FC<any> = ({ vocabularies, topic }) => {
+import { Vocabulary } from "@prisma/client";
+
+interface Props {
+  vocabularies: Vocabulary[];
+  topic: string;
+}
+
+const TopicPage: FC<Props> = ({ vocabularies, topic }) => {
   return (
     <>
       <Head>
-        <title>{topic}</title>
+        <title>{topic.charAt(0).toUpperCase() + topic.slice(1)}</title>
       </Head>
       <Container maxWidth="lg">
-        {vocabularies.map((item: any) => {
+        {vocabularies.map((item) => {
           return (
             <Fragment key={item.id}>
               <Box

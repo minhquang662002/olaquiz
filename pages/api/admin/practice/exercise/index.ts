@@ -6,8 +6,13 @@ export default async function handler(
 ) {
   try {
     if (req.method == "GET") {
+      const page = req.query.page ? Number(req.query.page) : 1;
+      const rows = req.query.rows ? Number(req.query.rows) : 5;
       const exercises =
-        await prisma.$queryRaw`SELECT "Exercise".id, "Exercise"."name", "PracticeTopic".name as "topic" from "Exercise" inner join "PracticeTopic" on "PracticeTopic".id = "Exercise"."practiceTopicId"`;
+        await prisma.$queryRaw`SELECT "Exercise".id, "Exercise"."name", "PracticeTopic".name as "topic" from "Exercise" inner join "PracticeTopic" on "PracticeTopic".id = "Exercise"."practiceTopicId" limit ${rows} offset ${
+          rows * page
+        }`;
+
       return res.status(200).json(exercises);
     }
 

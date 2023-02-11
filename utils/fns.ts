@@ -2,6 +2,8 @@ import { Dispatch } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
+import { RegisterProps } from "./types";
+import { signIn } from "next-auth/react";
 
 export const uploadFiles = async (files: File[]): Promise<string[]> => {
   let upFiles = [];
@@ -148,17 +150,17 @@ export const handleCreateTopic = async (
     if (!topic.title || !topic.image) {
       return Promise.reject("Thiếu thông tin cho bộ từ vựng");
     }
-    if (!vocabularies.length) {
-      return Promise.reject("Excel file is required!");
-    }
-    if (!imageFiles.length || !audioFiles.length) {
-      return Promise.reject("Thiếu các file hình ảnh và audio");
-    }
+    // if (!vocabularies.length) {
+    //   return Promise.reject("Excel file is required!");
+    // }
+    // if (!imageFiles.length || !audioFiles.length) {
+    //   return Promise.reject("Thiếu các file hình ảnh và audio");
+    // }
 
     const prImgUrl = await uploadFiles([topic.image] as File[]);
 
-    vocabularies = await addToExcel(vocabularies, imageFiles, "image");
-    vocabularies = await addToExcel(vocabularies, audioFiles, "audio");
+    // vocabularies = await addToExcel(vocabularies, imageFiles, "image");
+    // vocabularies = await addToExcel(vocabularies, audioFiles, "audio");
 
     await axios.post("/api/admin/vocabulary", {
       topic: { ...topic, image: prImgUrl[0] },
@@ -184,9 +186,26 @@ export const handleCreateExam = async (
     if (imageFiles.length > 0) {
       questions = await addToExcel(questions, imageFiles, "image");
     }
-    questions = await addToExcel(questions, audioFiles, "audio");
+    if (audioFiles.length > 0) {
+      questions = await addToExcel(questions, audioFiles, "audio");
+    }
 
     await axios.post(`/api/admin/test`, { questions, testName, testType });
+  } catch (error) {
+    return Promise.reject((error as AxiosError)?.response?.data || "error");
+  }
+};
+
+export const handleCreatePracticeTopic = async (
+  topicName: string,
+  topicType: string
+) => {
+  try {
+    if (!topicName || !topicType) {
+      return Promise.reject("Thiếu thông tin");
+    }
+
+    await axios.post(`/api/admin/practice/topic`, { topicName, topicType });
   } catch (error) {
     return Promise.reject((error as AxiosError)?.response?.data || "error");
   }
@@ -240,4 +259,19 @@ export const handleFiles = (ref: any, files: FileList | null, type: string) => {
   if (fileArray.some((item) => !item.type.startsWith(type)))
     return toast.error(`Files must be ${type}`);
   ref.current = fileArray;
+};
+
+export const register = async (formValue: RegisterProps) => {
+  try {
+    const res = await axios.post("/api/auth/register", formValue);
+    toast.success("Đăng ký thành công!");
+    signIn("credentials", {
+      email: res.data.email,
+      password: formValue.password,
+      redirect: false,
+    });
+  } catch (error) {
+    //@ts-ignore
+    toast.error(error?.response?.data as string);
+  }
 };

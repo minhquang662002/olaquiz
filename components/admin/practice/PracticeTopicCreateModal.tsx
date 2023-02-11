@@ -3,9 +3,8 @@ import { GlobalContext } from "../../context/GlobalContext";
 import AlertDialog from "../../AlertDialog";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { handleClose } from "../../../utils/fns";
+import { handleClose, handleCreatePracticeTopic } from "../../../utils/fns";
 import { useMutation } from "react-query";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
 interface Props {
@@ -19,13 +18,15 @@ const PracticeTopicCreateModal: FC<Props> = ({ open, setOpen }) => {
   const [topicName, setTopicName] = useState<string>("");
   const [topicType, setTopicType] = useState<string>("");
   const createMutation = useMutation({
-    mutationFn: (arg: any) => {
-      return axios.post(`/api/admin/practice/topic`, arg);
-    },
+    mutationFn: () => handleCreatePracticeTopic(topicName, topicType),
     onSuccess: () => {
       queryClient.invalidateQueries("adminData");
       toast.success("Tạo thành công!");
       setOpen(false);
+    },
+    onError: (error) => {
+      //@ts-ignore
+      toast.error(error?.response?.data || "Lỗi");
     },
   });
 
@@ -103,6 +104,7 @@ const PracticeTopicCreateModal: FC<Props> = ({ open, setOpen }) => {
             type="text"
             value={topicName}
             onChange={(e) => setTopicName(e.target.value)}
+            style={{ width: "100%" }}
           />
           <br />
           <label>Loại chủ đề:</label>
@@ -113,13 +115,17 @@ const PracticeTopicCreateModal: FC<Props> = ({ open, setOpen }) => {
             onChange={(e) => {
               setTopicType(e.target.value as string);
             }}
+            defaultValue={""}
           >
             <option value="" disabled hidden>
-              Choose here
+              Loại bài tập
             </option>
-            {["grammar", "vocabulary"].map((item) => (
-              <option key={item} value={item}>
-                {item}
+            {[
+              { value: "grammar", name: "Ngữ pháp" },
+              { value: "vocabulary", name: "Từ vựng" },
+            ].map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.name}
               </option>
             ))}
           </select>
@@ -127,7 +133,7 @@ const PracticeTopicCreateModal: FC<Props> = ({ open, setOpen }) => {
             variant="contained"
             sx={{ marginTop: 8, width: "100%" }}
             onClick={() => {
-              createMutation.mutate({ topicName, topicType });
+              createMutation.mutate();
             }}
           >
             Tạo

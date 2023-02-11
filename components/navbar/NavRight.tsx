@@ -78,7 +78,11 @@ const NavRight: FC = () => {
             >
               Đăng nhập
             </Button>
-            <Button className="register_btn" variant="contained" href="/login">
+            <Button
+              className="register_btn"
+              variant="contained"
+              href="/register"
+            >
               Đăng kí
             </Button>
           </Box>

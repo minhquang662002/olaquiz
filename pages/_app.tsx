@@ -43,9 +43,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               >
                 {!router.pathname.startsWith("/admin") && <Navbar />}
                 <Component {...pageProps} />
-                {!new RegExp(/test\/.*\/.*/).test(router.pathname) && (
-                  <Footer />
-                )}
+                {!new RegExp(/test\/.*\/.*/).test(router.pathname) &&
+                  !new RegExp(/practice\/.*\/.*/).test(router.pathname) &&
+                  !router.pathname.startsWith("/admin") && <Footer />}
               </div>
             </LocalizationProvider>
           </ThemeProvider>

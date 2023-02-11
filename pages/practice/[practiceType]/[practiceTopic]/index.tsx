@@ -41,7 +41,7 @@ const ExercisePage: NextPage<Props> = ({ exercises, initExercise }) => {
             <Grid sx={{ marginTop: 5 }} container gap={2}>
               {exercises?.map((item: Exercise) => (
                 <Grid
-                  md={3}
+                  md={3.5}
                   key={item.id}
                   sx={{
                     borderRadius: 2,

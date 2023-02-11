@@ -59,12 +59,11 @@ const QuestionPaletteButton: FC<Props> = ({
   return (
     <Grid
       item
-      md={1.5}
+      md={1.7}
       style={{
         borderRadius: 3,
         fontSize: 15,
         display: "flex",
-        alignSelf: "self-start",
         alignItems: "center",
         justifyContent: "center",
         background: buttonStyle,

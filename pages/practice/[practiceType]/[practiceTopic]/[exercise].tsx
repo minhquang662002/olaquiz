@@ -3,7 +3,6 @@ import { Container, Box, Grid } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Exercise, Question } from "@prisma/client";
-import QuestionPalette from "../../../../components/test/left/QuestionPalette";
 import { TestContextProvider } from "../../../../components/context/TestContext";
 import DisplayContainer from "../../../../components/exercise/DisplayContainer";
 import { prisma } from "../../../../utils/db";
@@ -13,6 +12,11 @@ interface Props {
   exercises: Exercise[];
   initExercise: Exercise & { questions: Question[] };
 }
+
+const QuestionPalette = dynamic(
+  import("../../../../components/test/left/QuestionPalette"),
+  { ssr: false }
+);
 
 const SwipeableEdgeDrawer = dynamic(
   import("../../../../components/test/SwipeableEdgeDrawer"),
@@ -40,14 +44,13 @@ const ExercisePage: NextPage<Props> = ({ exercises, initExercise }) => {
             }}
           >
             <QuestionPalette type="exercise" />
-            <Grid sx={{ marginTop: 5, flexGrow: 0 }} container gap={2}>
+            <Grid sx={{ marginTop: 5 }} container gap={2}>
               {exercises?.map((item: Exercise) => (
                 <Grid
                   key={item.id}
-                  md={3}
+                  item
+                  md={3.5}
                   sx={{
-                    flexGrow: 1,
-                    width: "100%",
                     borderRadius: 2,
                     background:
                       router.query.exercise == item.id ? "white" : "#E4E6ED",
@@ -65,7 +68,6 @@ const ExercisePage: NextPage<Props> = ({ exercises, initExercise }) => {
                     textAlign: "center",
                     padding: "3px",
                   }}
-                  item
                   onClick={() =>
                     router.push(
                       `/practice/${router.query.practiceType}/${router.query.practiceTopic}/${item.id}`

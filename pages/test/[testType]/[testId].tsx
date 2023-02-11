@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { Box, Container, Typography } from "@mui/material";
-import QuestionPalette from "../../../components/test/left/QuestionPalette";
 import Leaderboard from "../../../components/test/left/Leaderboard";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -13,7 +12,11 @@ import dynamic from "next/dynamic";
 import { TestContextProvider } from "../../../components/context/TestContext";
 
 const TestDisplayRight = dynamic(
-  import("../../../components/test/right/TestDisplayRight"),
+  import("../../../components/test/right/TestDisplayRight")
+);
+
+const QuestionPalette = dynamic(
+  import("../../../components/test/left/QuestionPalette"),
   { ssr: false }
 );
 

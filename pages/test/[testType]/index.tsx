@@ -26,7 +26,7 @@ const TestTypePage: NextPage<Props> = ({ tests, testType }) => {
       <Head>
         <title>Thi thử</title>
       </Head>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ marginBottom: 10 }}>
         <Typography
           variant="h4"
           textAlign="center"

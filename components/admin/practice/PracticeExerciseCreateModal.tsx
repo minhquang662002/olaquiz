@@ -126,6 +126,7 @@ const PracticeExerciseCreateModal: FC<Props> = ({ open, setOpen }) => {
             type="text"
             value={practiceName}
             onChange={(e) => setPracticeName(e.target.value)}
+            style={{ width: "100%" }}
           />
           <br />
           <label>Loại bài tập:</label>
@@ -136,13 +137,17 @@ const PracticeExerciseCreateModal: FC<Props> = ({ open, setOpen }) => {
               setSelectedType(e.target.value as string);
             }}
             style={{ textTransform: "capitalize" }}
+            defaultValue=""
           >
             <option value="" disabled hidden>
-              Choose here
+              Loại bài tập
             </option>
-            {["grammar", "vocabulary"].map((item) => (
-              <option key={item} value={item}>
-                {item}
+            {[
+              { value: "grammar", name: "Ngữ pháp" },
+              { value: "vocabulary", name: "Từ vựng" },
+            ].map((item) => (
+              <option key={item.value} value={item.value}>
+                {item.name}
               </option>
             ))}
           </select>
@@ -154,9 +159,10 @@ const PracticeExerciseCreateModal: FC<Props> = ({ open, setOpen }) => {
             onChange={(e) => {
               setSelectedTopic(e.target.value as string);
             }}
+            defaultValue=""
           >
             <option value="" disabled hidden>
-              Choose here
+              Chọn chủ đề
             </option>
             {data?.data?.map((item: PracticeTopic) => (
               <option key={item.id} value={item.id}>
